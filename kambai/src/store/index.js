@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+import usuarios from './modules/usuarios'
+
 export default new Vuex.Store({
   state: {
     drawer: false
@@ -20,5 +22,6 @@ export default new Vuex.Store({
     }
   },
   modules: {
+    usuarios
   }
 })

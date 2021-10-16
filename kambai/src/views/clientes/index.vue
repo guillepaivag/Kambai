@@ -95,7 +95,7 @@
                         <td>{{ item.telefonoCliente }}</td>
                         <td>
                             <v-btn
-                                :to="`/clientes/${item.ciCliente}`"
+                                :to="`/clientes/${item.uid}`"
                                 small
                                 rounded
                                 color="indigo"

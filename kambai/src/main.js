@@ -10,6 +10,14 @@ import firebase from 'firebase'
 import 'firebase/firestore'
 import firebaseConfig from '@/config/firebase'
 firebase.initializeApp(firebaseConfig)
+
+if (location.hostname === 'localhost') {
+  firebase.firestore().useEmulator('localhost', 8080)
+  firebase.auth().useEmulator('http://localhost:9099')
+  firebase.functions().useEmulator('localhost', 5001)
+}
+
+export const fb = firebase
 export const db = firebase.firestore()
 
 // AXIOS
@@ -26,28 +34,42 @@ Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false
 
-// firebase.auth().onAuthStateChanged((usuario) => {
-//   if (usuario) {
-//     console.log('usuario', usuario)
-//     db.collection('Usuarios').doc(usuario.uid).onSnapshot((usuarioFS) => {
-//       console.log('hay usuario', usuarioFS)
-//     })
-//   } else {
-//     console.log('no hay usuario')
-//   }
+firebase.auth().onAuthStateChanged(async (usuario) => {
+  if (usuario) {
+    console.log('usuario', usuario)
+    
+    // const veterinarioDoc = await db.collection('Usuarios').doc(usuario.uid).get()
+    // console.log('veterinarioDoc.data()', veterinarioDoc.data())
+    // store.commit('setUsuario', veterinarioDoc.data())
+    // console.log('store.state.usuarios.usuario', store.state.usuarios.usuario)
+    // store.commit('setAutenticado', true)
+    
+    db.collection('Usuarios').doc(usuario.uid).get().then(veterinarioDoc => {
+      console.log('veterinarioDoc.data()', veterinarioDoc.data())
+      store.commit('setUsuario', veterinarioDoc.data())
+      console.log('store.state.usuarios.usuario', store.state.usuarios.usuario)
+      
+    })
 
-//   store.commit('setLogeado', !!usuario)
+  } else {
+    console.log('no hay usuario')
+    store.commit('setUsuario', null)
+  }
+  store.commit('setAutenticado', !!usuario)
 
-//   new Vue({
-//     router,
-//     store,
-//     render: h => h(App)
-//   }).$mount('#app')
-// })
+  console.log('¡Comenzando Vue!')
 
-new Vue({
-  router,
-  vuetify,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+  new Vue({
+    store,
+    router,
+    vuetify,
+    render: h => h(App)
+  }).$mount('#app')
+})
+
+// new Vue({
+//   router,
+//   vuetify,
+//   store,
+//   render: h => h(App)
+// }).$mount('#app')

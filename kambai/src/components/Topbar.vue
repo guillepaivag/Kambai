@@ -41,7 +41,9 @@
                 <v-img src="https://robohash.org/nombreUsuario?set=set4" />
               </v-avatar>
             </v-badge>
-            <span class="ml-3">Belén Colman</span>
+            <span class="ml-3">
+              {{ $store.state.usuarios.usuario.nombreUsuario }}
+            </span>
           </v-chip>
         </span>
       </template>
@@ -52,7 +54,9 @@
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title>Belén Colman</v-list-item-title>
+            <v-list-item-title>
+              {{ $store.state.usuarios.usuario.nombreUsuario }}
+            </v-list-item-title>
             <v-list-item-subtitle>Veterinaria</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -63,6 +67,16 @@
           </v-list-item-icon>
           <v-list-item-title>
             {{ menu.title }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item link v-on:click="cerrarSesion">
+          <v-list-item-icon>
+            <v-icon>
+              mdi-logout
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            Cerrar Sesión
           </v-list-item-title>
         </v-list-item>
       </v-list>
@@ -79,7 +93,6 @@ export default {
         { title: "Perfil", icon: "mdi-account" },
         { title: "Cambiar contraseña", icon: "mdi-key" },
         { title: "Configuraciones", icon: "mdi-cog" },
-        { title: "Cerrar Sesión", icon: "mdi-logout" },
       ],
       items: [
         {
@@ -121,6 +134,10 @@ export default {
     drawerEvent() {
       const stateDrawer = this.$store.state.drawer
       this.$store.commit('setDrawer', !stateDrawer)
+    },
+    async cerrarSesion() {
+      await this.$store.dispatch('firebaseLogout')
+      this.$router.push('/autenticacion/inicio-sesion')
     }
   },
 };
