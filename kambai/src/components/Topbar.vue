@@ -38,7 +38,7 @@
           <v-chip link>
             <v-badge dot bottom color="green" offset-y="10" offset-x="10">
               <v-avatar size="40">
-                <v-img src="https://robohash.org/nombreUsuario?set=set4" />
+                <v-img :src="`https://robohash.org/${$store.state.usuarios.usuario.nombreUsuario}?set=set4`" />
               </v-avatar>
             </v-badge>
             <span class="ml-3">
@@ -50,14 +50,16 @@
       <v-list width="250" class="py-0">
         <v-list-item two-line>
           <v-list-item-avatar>
-            <img src="https://robohash.org/nombreUsuario?set=set4" />
+            <v-img :src="`https://robohash.org/${$store.state.usuarios.usuario.nombreUsuario}?set=set4`" />
           </v-list-item-avatar>
 
           <v-list-item-content>
             <v-list-item-title>
               {{ $store.state.usuarios.usuario.nombreUsuario }}
             </v-list-item-title>
-            <v-list-item-subtitle>Veterinaria</v-list-item-subtitle>
+            <v-list-item-subtitle>
+              {{ $store.state.usuarios.usuario.rol }}
+            </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
         <v-divider />

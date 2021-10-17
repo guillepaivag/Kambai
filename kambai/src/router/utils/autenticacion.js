@@ -1,3 +1,5 @@
+import noAutenticado from '@/middleware/noAutenticado'
+
 const rutas = []
 
 rutas.push({
@@ -7,7 +9,8 @@ rutas.push({
     meta: {
         title: 'Inicio de sesión - kambai',
         requiresAuth: false,
+        middleware: noAutenticado
     }
 })
 
-module.exports = rutas
+export default rutas

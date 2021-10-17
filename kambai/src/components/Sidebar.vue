@@ -65,6 +65,11 @@ export default {
           link: "/pacientes"
         },
         {
+          icon: "mdi-tools",
+          text: "Herramientas",
+          link: "/herramientas"
+        },
+        {
           icon: "mdi-cog",
           text: "Configuraciones",
           link: "/configuraciones"

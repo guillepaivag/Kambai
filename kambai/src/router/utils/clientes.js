@@ -1,3 +1,5 @@
+import autenticado from '@/middleware/autenticado'
+
 const rutas = []
 
 rutas.push({
@@ -6,7 +8,17 @@ rutas.push({
     component: () => import('../../views/clientes/index'),
     meta: {
         title: 'Clientes - kambai',
-        requiresAuth: true,
+        middleware: autenticado
+    }
+})
+
+rutas.push({
+    path: '/clientes/agregar',
+    name: 'Cliente',
+    component: () => import('../../views/clientes/Agregar'),
+    meta: {
+        title: 'Agregar cliente - kambai',
+        middleware: autenticado
     }
 })
 
@@ -16,8 +28,8 @@ rutas.push({
     component: () => import('../../views/clientes/Cliente'),
     meta: {
         title: 'Cliente - kambai',
-        requiresAuth: true,
+        middleware: autenticado
     }
 })
 
-module.exports = rutas
+export default rutas

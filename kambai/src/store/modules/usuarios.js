@@ -1,9 +1,8 @@
-import { fb } from '@/main'
+import { fb, db } from '@/plugins/firebase'
 
 export default {
     state: {
         usuario: null,
-        autenticado: false,
     },
     mutations: {
         setUsuario (state, usuario) {
@@ -19,16 +18,18 @@ export default {
                 rol: usuario.rol,
             }
         },
-        setAutenticado (state, autenticado) {
-            state.autenticado = !!autenticado
-        }
     },
     actions: {
-        firebaseLogin: ({commit}, data) => {
-            return fb.auth().signInWithEmailAndPassword(data.correo, data.contrasenha);
+        firebaseLogin: async ({commit}, data) => {
+            const auth = await fb.auth().signInWithEmailAndPassword(data.correo, data.contrasenha)
+            const veterinarioDoc = await db.collection('Usuarios').doc(auth.user.uid).get()
+            commit('setUsuario', veterinarioDoc.data())
+            return auth
         },
-        firebaseLogout: () => {
-            return fb.auth().signOut();
+        firebaseLogout: async ({commit}) => {
+            const auth = await fb.auth().signOut()
+            commit('setUsuario', null)
+            return auth
         }
     },
     getters: {
@@ -36,7 +37,7 @@ export default {
             return state.usuario
         },
         estaAutenticado ( state ) {
-            return !!state.autenticado
+            return !!state.usuario
         }
     },
     modules: {

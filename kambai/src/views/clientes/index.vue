@@ -1,9 +1,19 @@
 <template>
     <div class="">
 
-        <div class="">
-            <h2 class="titulo">Buscar</h2>
-        </div>
+        <v-subheader class="cabecera">
+            <b class="titulo">Cliente</b>
+            <v-spacer></v-spacer>
+            <v-btn
+                small
+                rounded
+                color="indigo"
+                dark
+                to="/clientes/agregar"
+            >
+                Nuevo cliente
+            </v-btn>
+        </v-subheader>
 
         <v-divider />
 
@@ -36,7 +46,7 @@
                 >
                 <v-text-field
                     v-model="input.ciCliente"
-                    label="Identificación"
+                    label="Cédula de identidad"
                 ></v-text-field>
                 </v-col>
 
@@ -63,7 +73,18 @@
 
         <v-divider />
 
+        <!-- <div class="mt-5">
+            <v-btn
+                rounded
+                color="indigo"
+                dark
+            >
+                Agregar cliente
+            </v-btn>
+        </div> -->
+
         <v-simple-table class="mt-5">
+
             <template v-slot:default>
                 <thead>
                     <tr>
@@ -112,6 +133,21 @@
                 </tbody>
             </template>
         </v-simple-table>
+
+        <v-divider class="mt-5 mb-5" />
+
+        <div class="text-center mb-5">
+            <v-btn
+                rounded
+                color="indigo"
+                class="white--text"
+            >
+                <v-icon left color="white">
+                    mdi-plus
+                </v-icon>
+                Mostrar más
+            </v-btn>
+        </div>
     </div>
 </template>
 
@@ -207,7 +243,11 @@ export default {
     .buscadores {
         text-align: center;
     }
+    .cabecera {
+        margin-top: -25px;
+    }
     .titulo {
-        color: #3A01DF;
+        margin-bottom: -6px;
+        font-size: 20px;
     }
 </style>

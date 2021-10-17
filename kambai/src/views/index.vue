@@ -6,9 +6,9 @@
                     <h3>Dashboard</h3>
                 </v-col>
                 <v-col lg="5" cols="12">
-                    <v-btn color="indigo" class="white--text">
+                    <!-- <v-btn color="indigo" class="white--text">
                         Certificados 
-                    </v-btn>
+                    </v-btn> -->
                 </v-col>
             </v-row>
         </v-subheader>
@@ -16,7 +16,9 @@
         <v-row>
             <v-col lg="7" cols="12">
                 <v-alert dense text color="indigo">
-                    ¡Bienvenido a Kambai! <strong>Belén Colman</strong>
+                    ¡Bienvenid@ a Kambai! <strong>
+                        {{ $store.state.usuarios.usuario.nombreUsuario }}
+                    </strong>
                 </v-alert>
                 <v-row>
                     <v-col lg="6" cols="12" v-for="(item,index) in activityLog" :key="index">
@@ -78,7 +80,7 @@
                 activityLog: [
                     {title: 'Total de clientes', amount: 50, icon: 'mdi-account', color: 'indigo darken-3'},
                     {title: 'Total de pacientes', amount: 3433, icon: 'mdi-account-group-outline', color: 'green darken-1'},
-                    {title: 'Total de Certificados y consentimientos', amount: 3433, icon: 'mdi-account-group-outline', color: 'indigo darken-3'},
+                    // {title: 'Total de Certificados y consentimientos', amount: 3433, icon: 'mdi-account-group-outline', color: 'indigo darken-3'},
                     // {
                     //     title: 'Pending Orders',
                     //     amount: 3433,

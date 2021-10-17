@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import InicioSesion from '@/components/auth-forms/InicioSesion'
+import InicioSesion from '@/components/formularios/auth/InicioSesion'
 export default {
   name: 'InicioSesion',
   components: {

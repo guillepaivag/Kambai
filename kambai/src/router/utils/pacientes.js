@@ -1,3 +1,5 @@
+import autenticado from '@/middleware/autenticado'
+
 const rutas = []
 
 rutas.push({
@@ -7,6 +9,7 @@ rutas.push({
     meta: {
         title: 'Pacientes - kambai',
         requiresAuth: true,
+        middleware: autenticado
     }
 })
 
@@ -17,7 +20,8 @@ rutas.push({
     meta: {
         title: 'Paciente - kambai',
         requiresAuth: true,
+        middleware: autenticado
     }
 })
 
-module.exports = rutas
+export default rutas

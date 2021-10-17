@@ -4,9 +4,14 @@ import store from '@/store'
 
 Vue.use(VueRouter)
 
-import rutasAutenticacion from './utils/autenticacion' 
-import rutasClientes from './utils/clientes' 
-import rutasPacientes from './utils/pacientes' 
+// Rutas de tipo
+import rutasAutenticacion from '@/router/utils/autenticacion' 
+import rutasClientes from '@/router/utils/clientes' 
+import rutasPacientes from '@/router/utils/pacientes' 
+import rutasHerramientas from '@/router/utils/herramientas' 
+
+// Middlewares
+import autenticado from '@/middleware/autenticado'
 
 const routes = [
   {
@@ -16,11 +21,13 @@ const routes = [
     meta: {
       title: 'Dashboard - kambai',
       requiresAuth: true,
+      middleware: autenticado
     }
   },
   ...rutasAutenticacion,
   ...rutasClientes,
   ...rutasPacientes,
+  ...rutasHerramientas,
   {
     path: '*',
     name: 'NotFound',
@@ -31,7 +38,6 @@ const routes = [
     }
   }
 ]
-console.log('routes', routes)
 
 const router = new VueRouter({
   mode: 'history',
@@ -39,45 +45,49 @@ const router = new VueRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   window.document.title = to.meta.title
-  const name = to.name
-  const requireAuth = to.meta.requiresAuth
-  const estaAutenticado = store.getters.estaAutenticado
-  // const estaAutenticado = Object.keys(store.state.usuarios).length
+  // const name = to.name
+  // const requireAuth = to.meta.requiresAuth
+  // const estaAutenticado = store.getters.estaAutenticado
+  // // const estaAutenticado = Object.keys(store.state.usuarios).length
 
-  if ( requireAuth ) {
-    console.log('Parte: ', 1)
+  // if ( requireAuth ) {
+  //   console.log('Parte: ', 1)
     
-    if ( estaAutenticado ) {
-      console.log('Parte: ', 1.1)
-      next()
-    } else {
-      console.log('Parte: ', 1.2)
-      next({ name: 'InicioSesion' })
-    }
+  //   if ( estaAutenticado ) {
+  //     console.log('Parte: ', 1.1)
+  //     next()
+  //   } else {
+  //     console.log('Parte: ', 1.2)
+  //     next({ name: 'InicioSesion' })
+  //   }
 
-  } else {
-    console.log('Parte: ', 2)
+  // } else {
+  //   console.log('Parte: ', 2)
     
-    if ( name === 'InicioSesion' ) {
-      console.log('Parte: ', 2.1)
+  //   if ( name === 'InicioSesion' ) {
+  //     console.log('Parte: ', 2.1)
       
-      if ( estaAutenticado ) {
-        console.log('Parte: ', 2.11)
-        next({ name: 'Dashboard' })
-      } else {
-        console.log('Parte: ', 2.12)
-        next()
-      }
+  //     if ( estaAutenticado ) {
+  //       console.log('Parte: ', 2.11)
+  //       next({ name: 'Dashboard' })
+  //     } else {
+  //       console.log('Parte: ', 2.12)
+  //       next()
+  //     }
 
-    } else {
-      console.log('Parte: ', 2.2)
-      next();
-    }
+  //   } else {
+  //     console.log('Parte: ', 2.2)
+  //     next();
+  //   }
 
-  }
+  // }
 
+  await new Promise((res, rej) => {
+    next()
+    res()
+  })
 })
 
 export default router
