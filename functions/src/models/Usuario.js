@@ -5,6 +5,8 @@ class Usuario {
         this.uid = datosUsuario && datosUsuario.uid ? datosUsuario.uid : ''
         this.correo = datosUsuario && datosUsuario.correo ? datosUsuario.correo : ''
         this.nombreUsuario = datosUsuario && datosUsuario.nombreUsuario ? datosUsuario.nombreUsuario : ''
+        this.nombreCompleto = datosUsuario && datosUsuario.nombreCompleto ? datosUsuario.nombreCompleto : ''
+        this.rol = datosUsuario && datosUsuario.rol ? datosUsuario.rol : ''
     }
 
     getDatosUsuario () {
@@ -12,13 +14,17 @@ class Usuario {
             uid: this.uid,
             correo: this.correo,
             nombreUsuario: this.nombreUsuario,
+            nombreCompleto: this.nombreCompleto,
+            rol: this.rol
         }
     }
 
     setDatosUsuario (datosUsuario) {
         this.setUID(datosUsuario.uid)
-        this.setUID(datosUsuario.correo)
-        this.setUID(datosUsuario.nombreUsuario)
+        this.setCORREO(datosUsuario.correo)
+        this.setNOMBRE_USUARIO(datosUsuario.nombreUsuario)
+        this.setNOMBRE_COMPLETO(datosUsuario.nombreCompleto)
+        this.setROL(datosUsuario.rol)
     }
 
     setUID (uid) {
@@ -43,6 +49,22 @@ class Usuario {
             return
         }
         this.nombreUsuario = nombreUsuario
+    }
+
+    setNOMBRE_COMPLETO ( nombreCompleto ) {
+        if (!nombreCompleto) {
+            this.nombreCompleto = ''
+            return
+        }
+        this.nombreCompleto = nombreCompleto
+    }
+
+    setROL ( rol ) {
+        if (!rol) {
+            this.rol = ''
+            return
+        }
+        this.rol = rol
     }
 
     /**

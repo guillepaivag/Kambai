@@ -25,5 +25,12 @@ new Vue({
   store,
   router,
   vuetify,
-  render: h => h(App)
+  render: h => h(App),
+  created() {
+    this.$store.watch(myStore => {
+      if (!myStore.usuarios.usuario && this.$route.fullPath !== '/autenticacion/inicio-sesion') {
+        this.$router.push('/autenticacion/inicio-sesion')
+      }
+    })
+  }
 }).$mount('#app')

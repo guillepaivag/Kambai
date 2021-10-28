@@ -1,18 +1,21 @@
 <template>
     <div class="">
+        <v-alert
+            v-if="operacion === 'actualizar'"
+            color="blue"
+            dark
+            dense
+            icon="mdi-checkbox-marked-circle-outline"
+            prominent
+        >
+            Solo se actualizaran los datos que modifiques.
+        </v-alert>
+
         <v-form>
             <v-container>
-                <div>
-                    <v-text-field
-                        v-model="input.ciCliente"
-                        :error-messages="ErroresCiCliente"
-                        :counter="infoInput.ciCliente.max"
-                        label="CI del cliente"
-                        required
-                        :disabled="operacion === 'leer'"
-                        @input="$v.input.ciCliente.$touch()"
-                        @blur="$v.input.ciCliente.$touch()"
-                    ></v-text-field>
+                <div class="mb-4" v-if="operacion != 'leer'">
+                    <b>Datos requeridos</b>
+                    <v-divider></v-divider>
                 </div>
                 <v-row>
                     <v-col
@@ -20,14 +23,14 @@
                         md="6"
                     >
                         <v-text-field
-                            v-model="input.nombreCliente"
-                            :error-messages="ErroresNombreCliente"
-                            :counter="infoInput.nombreCliente.max"
-                            label="Nombre del cliente"
-                            required
+                            v-model="input.ci"
+                            :error-messages="ErroresCi"
+                            :counter="infoInput.ci.max"
+                            label="CI del cliente"
+                            type="number"
                             :disabled="operacion === 'leer'"
-                            @input="$v.input.nombreCliente.$touch()"
-                            @blur="$v.input.nombreCliente.$touch()"
+                            @input="$v.input.ci.$touch()"
+                            @blur="$v.input.ci.$touch()"
                         ></v-text-field>
                     </v-col>
 
@@ -36,14 +39,34 @@
                         md="6"
                     >
                         <v-text-field
-                            v-model="input.correoCliente"
-                            :error-messages="ErroresCorreoCliente"
-                            :counter="infoInput.correoCliente.max"
-                            label="Correo del cliente"
-                            required
+                            v-model="input.nombre"
+                            :error-messages="ErroresNombre"
+                            :counter="infoInput.nombre.max"
+                            label="Nombre del cliente"
                             :disabled="operacion === 'leer'"
-                            @input="$v.input.correoCliente.$touch()"
-                            @blur="$v.input.correoCliente.$touch()"
+                            @input="$v.input.nombre.$touch()"
+                            @blur="$v.input.nombre.$touch()"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+
+                <div class="mt-4 mb-4" v-if="operacion != 'leer'">
+                    <b>Datos opcionales</b>
+                    <v-divider></v-divider>
+                </div>
+                <v-row>
+                    <v-col
+                        cols="12"
+                        md="12"
+                    >
+                        <v-text-field
+                            v-model="input.correo"
+                            :error-messages="ErroresCorreo"
+                            :counter="infoInput.correo.max"
+                            label="Correo del cliente"
+                            :disabled="operacion === 'leer'"
+                            @input="$v.input.correo.$touch()"
+                            @blur="$v.input.correo.$touch()"
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -56,7 +79,6 @@
                             v-model="input.telefono"
                             :error-messages="ErroresTelefono"
                             label="Teléfono"
-                            required
                             :disabled="operacion === 'leer'"
                             @input="$v.input.telefono.$touch()"
                             @blur="$v.input.telefono.$touch()"
@@ -71,7 +93,6 @@
                             v-model="input.telefonoCelular"
                             :error-messages="ErroresTelefonoCelular"
                             label="Teléfono celular"
-                            required
                             :disabled="operacion === 'leer'"
                             @input="$v.input.telefonoCelular.$touch()"
                             @blur="$v.input.telefonoCelular.$touch()"
@@ -88,7 +109,6 @@
                             :error-messages="ErroresCiudad"
                             :counter="infoInput.ciudad.max"
                             label="Ciudad"
-                            required
                             :disabled="operacion === 'leer'"
                             @input="$v.input.ciudad.$touch()"
                             @blur="$v.input.ciudad.$touch()"
@@ -104,7 +124,6 @@
                             :error-messages="ErroresDireccion"
                             :counter="infoInput.direccion.max"
                             label="Dirección"
-                            required
                             :disabled="operacion === 'leer'"
                             @input="$v.input.direccion.$touch()"
                             @blur="$v.input.direccion.$touch()"
@@ -112,12 +131,12 @@
                     </v-col>
                 </v-row>
 
-                <v-divider class="mt-5 mb-5" />
+                <v-divider class="mt-5 mb-5" v-if="operacion != 'leer'" />
 
                 <div v-if="operacion != 'leer'">
                     <v-btn
                         rounded
-                        color="indigo"
+                        color="blue"
                         class="white--text mr-4"
                         v-on:click="enviar"
                     >
@@ -128,9 +147,22 @@
                     </v-btn>
                     <v-btn
                         rounded
-                        color="indigo"
+                        color="blue"
+                        class="white--text"
+                        v-on:click="reiniciar"
+                        v-if="operacion === 'actualizar'"
+                    >
+                        <v-icon left color="white">
+                            mdi-reload
+                        </v-icon>
+                        Reiniciar
+                    </v-btn>
+                    <v-btn
+                        rounded
+                        color="blue"
                         class="white--text"
                         v-on:click="limpiar"
+                        v-if="operacion === 'agregar'"
                     >
                         <v-icon left color="white">
                             mdi-eraser
@@ -145,16 +177,16 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, maxLength, email } from 'vuelidate/lib/validators'
+import { required, maxLength, email, numeric } from 'vuelidate/lib/validators'
 
 const infoInput = {
-    ciCliente: {
+    ci: {
         max: 50
     },
-    nombreCliente: {
+    nombre: {
         max: 50
     },
-    correoCliente: {
+    correo: {
         max: 50
     },
     ciudad: {
@@ -170,35 +202,27 @@ export default {
 
     validations: {
         input: {
-            ciCliente: { required, maxLength: maxLength(infoInput.ciCliente.max) },
-            nombreCliente: { required, maxLength: maxLength(infoInput.nombreCliente.max) },
-            correoCliente: { required, email, maxLength: maxLength(infoInput.correoCliente.max) },
-            telefono: { required },
-            telefonoCelular: { required },
-            ciudad: { required, maxLength: maxLength(infoInput.ciudad.max) },
-            direccion: { required, maxLength: maxLength(infoInput.direccion.max) },
+            ci: { required, numeric, maxLength: maxLength(infoInput.ci.max) },
+            nombre: { required, maxLength: maxLength(infoInput.nombre.max) },
+            correo: { email, maxLength: maxLength(infoInput.correo.max) },
+            telefono: {  },
+            telefonoCelular: {  },
+            ciudad: { maxLength: maxLength(infoInput.ciudad.max) },
+            direccion: { maxLength: maxLength(infoInput.direccion.max) },
         }
     },
 
     props: {
-        operacion: String
+        operacion: String,
+        datosCliente: Object
     },
 
     data() {
         return {
-            datosCliente: {
-                ciCliente: '',
-                nombreCliente: '',
-                correoCliente: '',
-                telefono: '',
-                telefonoCelular: '',
-                ciudad: '',
-                direccion: '',
-            },
             input: {
-                ciCliente: '',
-                nombreCliente: '',
-                correoCliente: '',
+                ci: '',
+                nombre: '',
+                correo: '',
                 telefono: '',
                 telefonoCelular: '',
                 ciudad: '',
@@ -212,30 +236,31 @@ export default {
         textoBoton () {
             return this.operacion === 'agregar' ? 'Agregar' : 'Actualizar'
         },
-        ErroresCiCliente () {
+        ErroresCi () {
             const errors = []
-            if (!this.$v.input.ciCliente.$error) return errors
+            if (!this.$v.input.ci.$error) return errors
 
-            !this.$v.input.ciCliente.maxLength && errors.push('Ya supero la cantidad máxima.')
-            !this.$v.input.ciCliente.required && errors.push('La cédula de identidad no existe.')
+            !this.$v.input.ci.numeric && errors.push('La cédula de identidad debe ser numerico.')
+            !this.$v.input.ci.maxLength && errors.push('Ya supero la cantidad máxima.')
+            !this.$v.input.ci.required && errors.push('La cédula de identidad no existe.')
 
             return errors
         },
-        ErroresNombreCliente () {
+        ErroresNombre () {
             const errors = []
-            if (!this.$v.input.nombreCliente.$error) return errors
+            if (!this.$v.input.nombre.$error) return errors
 
-            !this.$v.input.nombreCliente.maxLength && errors.push('Ya supero la cantidad máxima.')
-            !this.$v.input.nombreCliente.required && errors.push('El nombre de cliente no existe.')
+            !this.$v.input.nombre.maxLength && errors.push('Ya supero la cantidad máxima.')
+            !this.$v.input.nombre.required && errors.push('El nombre de cliente no existe.')
 
             return errors
         },
-        ErroresCorreoCliente () {
+        ErroresCorreo () {
             const errors = []
-            if (!this.$v.input.correoCliente.$error) return errors
+            if (!this.$v.input.correo.$error) return errors
 
-            !this.$v.input.correoCliente.email && errors.push('Debe ser un correo valido.')
-            !this.$v.input.correoCliente.required && errors.push('El correo es requerido.')
+            !this.$v.input.correo.email && errors.push('Debe ser un correo valido.')
+            // !this.$v.input.correo.required && errors.push('El correo es requerido.')
 
             return errors
         },
@@ -243,7 +268,7 @@ export default {
             const errors = []
             if (!this.$v.input.telefono.$error) return errors
 
-            !this.$v.input.telefono.required && errors.push('El número de teléfono es requerido.')
+            // !this.$v.input.telefono.required && errors.push('El número de teléfono es requerido.')
 
             return errors
         },
@@ -251,7 +276,7 @@ export default {
             const errors = []
             if (!this.$v.input.telefonoCelular.$error) return errors
 
-            !this.$v.input.telefonoCelular.required && errors.push('El número de celular es requerido.')
+            // !this.$v.input.telefonoCelular.required && errors.push('El número de celular es requerido.')
 
             return errors
         },
@@ -260,7 +285,7 @@ export default {
             if (!this.$v.input.ciudad.$error) return errors
 
             !this.$v.input.ciudad.maxLength && errors.push('Ya supero la cantidad máxima.')
-            !this.$v.input.ciudad.required && errors.push('La ciudad es requerida.')
+            // !this.$v.input.ciudad.required && errors.push('La ciudad es requerida.')
 
             return errors
         },
@@ -269,7 +294,7 @@ export default {
             if (!this.$v.input.direccion.$error) return errors
 
             !this.$v.input.direccion.maxLength && errors.push('Ya supero la cantidad máxima.')
-            !this.$v.input.direccion.required && errors.push('La dirección es requerida.')
+            // !this.$v.input.direccion.required && errors.push('La dirección es requerida.')
 
             return errors
         },
@@ -284,12 +309,47 @@ export default {
                 return
             }
             
+            this.input.ci ? this.input.ci = parseInt(this.input.ci) : ''
+            
             if ( this.operacion !== 'actualizar' ) {
-                datos = this.input
+                datos.ci = this.input.ci
+                datos.nombre = this.input.nombre
+                
+                datos.correo = this.input.correo ? this.input.correo : ''
+                datos.telefono = this.input.telefono ? this.input.telefono : ''
+                datos.telefonoCelular = this.input.telefonoCelular ? this.input.telefonoCelular : ''
+                datos.ciudad = this.input.ciudad ? this.input.ciudad : ''
+                datos.direccion = this.input.direccion ? this.input.direccion : ''
 
             } else {
                 // Filtro de datos diferentes de 'this.input' con 'this.datosCliente'
-                
+                if ( this.input.ci != this.datosCliente.ci ) {
+                    datos.ci = this.input.ci
+                }
+
+                if ( this.input.nombre != this.datosCliente.nombre ) {
+                    datos.nombre = this.input.nombre
+                }
+
+                if ( this.input.correo != this.datosCliente.correo ) {
+                    datos.correo = this.input.correo
+                }
+
+                if ( this.input.telefono != this.datosCliente.telefono ) {
+                    datos.telefono = this.input.telefono
+                }
+
+                if ( this.input.telefonoCelular != this.datosCliente.telefonoCelular ) {
+                    datos.telefonoCelular = this.input.telefonoCelular
+                }
+
+                if ( this.input.ciudad != this.datosCliente.ciudad ) {
+                    datos.ciudad = this.input.ciudad
+                }
+
+                if ( this.input.direccion != this.datosCliente.direccion ) {
+                    datos.direccion = this.input.direccion
+                }
             }
             
             this.operacion !== 'actualizar' ? this.$emit('datosNuevos', datos) : this.$emit('datosActualizados', datos)
@@ -297,15 +357,37 @@ export default {
         limpiar () {
             this.$v.$reset()
             this.input = {
-                ciCliente: '',
-                nombreCliente: '',
-                correoCliente: '',
+                ci: '',
+                nombre: '',
+                correo: '',
                 telefono: '',
                 telefonoCelular: '',
                 ciudad: '',
                 direccion: '',
             }
         },
+        reiniciar () {
+            if (this.operacion === 'actualizar') {
+                this.input.ci = this.datosCliente.ci
+                this.input.nombre = this.datosCliente.nombre
+                this.input.correo = this.datosCliente.correo
+                this.input.telefono = this.datosCliente.telefono
+                this.input.telefonoCelular = this.datosCliente.telefonoCelular
+                this.input.ciudad = this.datosCliente.ciudad
+                this.input.direccion = this.datosCliente.direccion
+            }
+        }
+    },
+    created() {
+        if (this.operacion != 'agregar') {
+            this.input.ci = this.datosCliente.ci
+            this.input.nombre = this.datosCliente.nombre
+            this.input.correo = this.datosCliente.correo
+            this.input.telefono = this.datosCliente.telefono
+            this.input.telefonoCelular = this.datosCliente.telefonoCelular
+            this.input.ciudad = this.datosCliente.ciudad
+            this.input.direccion = this.datosCliente.direccion
+        }
     },
 }
 </script>

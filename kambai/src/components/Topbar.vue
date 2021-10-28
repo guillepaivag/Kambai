@@ -63,7 +63,7 @@
           </v-list-item-content>
         </v-list-item>
         <v-divider />
-        <v-list-item link v-for="(menu, i) in menus" :key="i">
+        <v-list-item link v-for="(menu, i) in menus" :key="i" :to="menu.to">
           <v-list-item-icon>
             <v-icon>{{ menu.icon }}</v-icon>
           </v-list-item-icon>
@@ -92,9 +92,8 @@ export default {
   data() {
     return {
       menus: [
-        { title: "Perfil", icon: "mdi-account" },
-        { title: "Cambiar contraseña", icon: "mdi-key" },
-        { title: "Configuraciones", icon: "mdi-cog" },
+        { title: "Perfil", icon: "mdi-account", to: '/perfil' },
+        { title: "Configuraciones", icon: "mdi-cog", to: '/configuraciones' },
       ],
       items: [
         {
@@ -139,7 +138,6 @@ export default {
     },
     async cerrarSesion() {
       await this.$store.dispatch('firebaseLogout')
-      this.$router.push('/autenticacion/inicio-sesion')
     }
   },
 };

@@ -7,7 +7,7 @@
             <v-btn
                 small
                 rounded
-                color="indigo"
+                color="blue"
                 dark
                 to="/clientes/agregar"
             >
@@ -24,7 +24,7 @@
                 md="6"
                 >
                 <v-text-field
-                    v-model="input.nombreCliente"
+                    v-model="input.nombre"
                     label="Nombre"
                 ></v-text-field>
                 </v-col>
@@ -34,7 +34,7 @@
                 md="6"
                 >
                 <v-text-field
-                    v-model="input.correoCliente"
+                    v-model="input.correo"
                     label="Correo"
                 ></v-text-field>
                 </v-col>
@@ -45,18 +45,8 @@
                 md="6"
                 >
                 <v-text-field
-                    v-model="input.ciCliente"
+                    v-model="input.ci"
                     label="Cédula de identidad"
-                ></v-text-field>
-                </v-col>
-
-                <v-col
-                cols="12"
-                md="6"
-                >
-                <v-text-field
-                    v-model="input.telefonoCliente"
-                    label="Teléfono"
                 ></v-text-field>
                 </v-col>
             </v-row>
@@ -64,8 +54,9 @@
         <div class="mb-5">
             <v-btn
                 rounded
-                color="indigo"
+                color="blue"
                 dark
+                v-on:click="inicializarLista"
             >
             Buscar
             </v-btn>
@@ -76,13 +67,19 @@
         <!-- <div class="mt-5">
             <v-btn
                 rounded
-                color="indigo"
+                color="blue"
                 dark
             >
                 Agregar cliente
             </v-btn>
         </div> -->
 
+        <v-progress-linear
+            :active="buscando"
+            :indeterminate="buscando"
+            absolute
+            color="blue"
+        ></v-progress-linear>
         <v-simple-table class="mt-5">
 
             <template v-slot:default>
@@ -107,19 +104,19 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in desserts"
+                        v-for="item in clientes"
                         :key="item.name"
                     >
-                        <td>{{ item.ciCliente }}</td>
-                        <td>{{ item.nombreCliente }}</td>
-                        <td>{{ item.correoCliente }}</td>
-                        <td>{{ item.telefonoCliente }}</td>
+                        <td>{{ item.ci }}</td>
+                        <td>{{ item.nombre }}</td>
+                        <td>{{ item.correo }}</td>
+                        <td>{{ item.telefono }}</td>
                         <td>
                             <v-btn
-                                :to="`/clientes/${item.uid}`"
+                                :to="`/clientes/cliente/${item.uid}`"
                                 small
                                 rounded
-                                color="indigo"
+                                color="blue"
                                 class="white--text"
                             >
                                 <v-icon left color="white">
@@ -134,13 +131,14 @@
             </template>
         </v-simple-table>
 
-        <v-divider class="mt-5 mb-5" />
+        <v-divider class="mt-5 mb-5" v-if="existeMasDatos" />
 
-        <div class="text-center mb-5">
+        <div class="text-center mb-5" v-if="existeMasDatos">
             <v-btn
                 rounded
-                color="indigo"
+                color="blue"
                 class="white--text"
+                v-on:click="paginar"
             >
                 <v-icon left color="white">
                     mdi-plus
@@ -152,89 +150,98 @@
 </template>
 
 <script>
+import { fb, db } from '@/plugins/firebase'
+
 export default {
     name: 'ClienteIndex',
     data() {
         return {
             input: {
-                nombreCliente: '',
-                correoCliente: '',
-                ciCliente: '',
-                telefonoCliente: '',
+                nombre: '',
+                correo: '',
+                ci: '',
             },
-            desserts: [
-                {
-                    uid: 'd4sa56d4as56d4a6',
-                    nombreCliente: 'Frozen Yogurt',
-                    correoCliente: 159,
-                    ciCliente: 159,
-                    telefonoCliente: 159,
-                },
-                {
-                    uid: 'd4sa56d4as56d4a6',
-                    nombreCliente: 'Ice cream sandwich',
-                    correoCliente: 159,
-                    ciCliente: 159,
-                    telefonoCliente: 159,
-                },
-                {
-                    uid: 'd4sa56d4as56d4a6',
-                    nombreCliente: 'Eclair',
-                    correoCliente: 159,
-                    ciCliente: 159,
-                    telefonoCliente: 159,
-                },
-                {
-                    uid: 'd4sa56d4as56d4a6',
-                    nombreCliente: 'Cupcake',
-                    correoCliente: 159,
-                    ciCliente: 159,
-                    telefonoCliente: 159,
-                },
-                {
-                    uid: 'd4sa56d4as56d4a6',
-                    nombreCliente: 'Gingerbread',
-                    correoCliente: 159,
-                    ciCliente: 159,
-                    telefonoCliente: 159,
-                },
-                {
-                    uid: 'd4sa56d4as56d4a6',
-                    nombreCliente: 'Jelly bean',
-                    correoCliente: 159,
-                    ciCliente: 159,
-                    telefonoCliente: 159,
-                },
-                {
-                    uid: 'd4sa56d4as56d4a6',
-                    nombreCliente: 'Lollipop',
-                    correoCliente: 159,
-                    ciCliente: 159,
-                    telefonoCliente: 159,
-                },
-                {
-                    uid: 'd4sa56d4as56d4a6',
-                    nombreCliente: 'Honeycomb',
-                    correoCliente: 159,
-                    ciCliente: 159,
-                    telefonoCliente: 159,
-                },
-                {
-                    uid: 'd4sa56d4as56d4a6',
-                    nombreCliente: 'Donut',
-                    correoCliente: 159,
-                    ciCliente: 159,
-                    telefonoCliente: 159,
-                },
-                {
-                    uid: 'd4sa56d4as56d4a6',
-                    nombreCliente: 'KitKat',
-                    correoCliente: 159,
-                    ciCliente: 159,
-                    telefonoCliente: 159,
-                },
-            ],
+            MAXIMO_USUARIOS: 1,
+            ultimoDocumento: null,
+            existeMasDatos: false,
+            clientes: [],
+            buscando: true,
         }
+    },
+    methods: {
+        async inicializarLista () {
+            const {
+                nombre,
+                correo,
+                ci,
+            } = this.input
+            const clientesAux = []
+            this.clientes = []
+            this.ultimoDocumento = null
+            this.buscando = true
+
+            let ref = db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid).collection('Clientes')
+            ref = this.filtrar( ref, this.input )
+            ref = ref.limit( this.MAXIMO_USUARIOS )
+            const documentSnapshots = await ref.get()
+            this.ultimoDocumento = documentSnapshots.docs[documentSnapshots.docs.length-1]
+            for (let i = 0; i < documentSnapshots.docs.length; i++) {
+                const element = documentSnapshots.docs[i]
+                clientesAux.push( element.data() )
+            }
+            if (clientesAux.length) {
+                await this.verificarSiHayMasDatos()
+                this.clientes = clientesAux
+            }
+            this.buscando = false
+        },
+        async paginar () {
+            const clientesAux = JSON.parse( JSON.stringify( this.clientes ) )
+            this.buscando = true
+            
+            let ref = db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid).collection('Clientes')
+                .startAfter(this.ultimoDocumento)
+            ref = this.filtrar( ref, this.input )
+            ref = ref.limit(this.MAXIMO_USUARIOS)
+            const documentSnapshots = await ref.get()
+            this.ultimoDocumento = documentSnapshots.docs[documentSnapshots.docs.length-1]
+            for (let i = 0; i < documentSnapshots.docs.length; i++) {
+                const element = documentSnapshots.docs[i]
+                clientesAux.push( element.data() )
+            }
+            await this.verificarSiHayMasDatos()
+            this.clientes = clientesAux
+            this.buscando = false
+        },
+        filtrar ( ref, datosBusqueda ) {
+            const {
+                nombre,
+                correo,
+                ci,
+            } = this.input
+            if ( nombre ) {
+                ref = ref.where('nombre', '==', nombre)
+            }
+            if ( correo ) {
+                ref = ref.where('correo', '==', correo)
+            }
+            if ( ci ) {
+                ref = ref.where('ci', '==', parseInt(ci))
+            }
+
+            return ref
+        },
+        async verificarSiHayMasDatos () {
+            let ref = db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid).collection('Clientes')
+                .startAfter(this.ultimoDocumento)
+            ref = this.filtrar( ref, this.input )
+            ref = ref.limit(1)
+            const siguienteDato = await ref.get()
+            this.existeMasDatos = !siguienteDato.empty
+        },
+    },
+    async created() {
+        await this.inicializarLista()
     },
 }
 </script>

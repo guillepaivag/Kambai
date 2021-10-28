@@ -16,16 +16,16 @@ export const db = firebase.firestore()
 
 firebase.auth().onAuthStateChanged(async (usuario) => {
     if (usuario) {
-        console.log('usuario', usuario)
-        if (!store.getters.estaAutenticado) {
-            const veterinarioDoc = await db.collection('Usuarios').doc(usuario.uid).get()
+        const token = await usuario.getIdToken()
+
+
+        db.collection('Usuarios').doc(usuario.uid).onSnapshot(veterinarioDoc => {
             store.commit('setUsuario', veterinarioDoc.data())
-        }
+            store.commit('setToken', token)
+        })
         
     } else {
-        console.log('no hay usuario')
         store.commit('setUsuario', null)
+        store.commit('setToken', null)
     }
-
-    console.log('terminando onAuthStateChanged')
 })

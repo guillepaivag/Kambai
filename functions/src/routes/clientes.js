@@ -1,10 +1,10 @@
 const { Router } = require('express')
 const router = Router()
 
-// const middlewareUsuario = require('../middlewares/usuarios')
-// const middlewareClientes = require('../middlewares/clientes')
 const controllerClientes = require('../controllers/clientes')
+const validarDatosCliente = require('../validators/clientes')
+const { estaAutenticado } = require('../middlewares/usuarios')
 
-router.post('/crearUsuario', controllerClientes.crearCliente)
+router.post('/crearCliente', estaAutenticado, validarDatosCliente.validarDatosCliente, controllerClientes.crearCliente)
 
 module.exports = router

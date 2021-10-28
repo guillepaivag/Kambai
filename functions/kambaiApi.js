@@ -12,6 +12,10 @@ app.use('/pacientes', require('./src/routes/pacientes'))
 
 app.use((err, req, res, next) => {
     // Manejo de errores para {{ err }}
+    console.log('err', err)
+    res.status(500).json({
+        err
+    })
 })
 
 module.exports = app
