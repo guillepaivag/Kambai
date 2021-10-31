@@ -1,4 +1,4 @@
-import { fb, db } from '@/plugins/firebase'
+import { fb, db } from '../../plugins/firebase'
 
 export default {
     state: {
@@ -41,7 +41,20 @@ export default {
             const auth = await fb.auth().signOut()
             commit('setUsuario', null)
             return auth
+        },
+        updateToken: async ({commit}) => {
+            const usuario = fb.auth().currentUser
+            if (!usuario) {
+                return null
+            }
+
+            const token = await usuario.getIdToken()
+
+            commit('setToken', token)
+
+            return token
         }
+
     },
     getters: {
         getUsuario ( state ) {

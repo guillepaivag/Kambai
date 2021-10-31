@@ -1,5 +1,6 @@
 const admin = require('../../firebase-service')
 const Paciente = require("../models/Paciente")
+const construirDatosPacienteNuevoPropietario = require('../utils/paciente/construirDatosPacienteNuevoPropietario')
 
 const controller = {}
 
@@ -62,27 +63,47 @@ controller.verPaciente = async (req, res) => {
 
 controller.actualizarPaciente = async (req, res) => {
     try {
-        const { kambaiDatos, params } = req
+        const { kambaiDatos, params, body } = req
         const { uidSolicitante, datosAuthSolicitante } = kambaiDatos
         const { uidCliente, uidPaciente } = params
+        const { datosPaciente } = body
         
         // Borrar paciente
         const paciente = new Paciente()
         await paciente.importarDatos(uidSolicitante, uidCliente, uidPaciente)
-        await paciente.borrar(uidSolicitante, uidCliente)
 
-        // Actualizar la cantidad
-        const ref = admin.firestore().collection('Usuarios').doc(uidSolicitante)
-        const data = (await ref.get()).data()
+        if ( datosPaciente.uidCliente !== undefined && datosPaciente.uidCliente && datosPaciente.uidCliente !== uidCliente ) {
+            // **** El paciente cambia de dueño ****
+            // Construimos los datos del paciente
+            const datosPacienteNuevo = construirDatosPacienteNuevoPropietario( datosPaciente, paciente.getDatosPaciente() )
 
-        ref.update({
-            cantidadPacientes: data.cantidadPacientes - 1
-        })
+            // Eliminamos el paciente 
+            await paciente.borrar(uidSolicitante, uidCliente)
+            
+            // Agregamos el paciente
+            const pacienteNuevo = new Paciente(datosPacienteNuevo)
+            await pacienteNuevo.agregar(uidSolicitante, datosPaciente.uidCliente)
+
+            return res.status(200).json({
+                codigo: 'Exito',
+                mensaje: `¡El paciente tiene nuevo dueño!`,
+                resultado: {
+                    uidCliente: datosPaciente.uidCliente,
+                    uidPaciente: pacienteNuevo.uid,
+                },
+            })
+        }
+        
+        // Actualización normal de datos del paciente
+        await paciente.actualizar(uidSolicitante, uidCliente, datosPaciente)
 
         return res.status(200).json({
             codigo: 'Exito',
-            mensaje: `Se elimino el paciente de forma correcta.`,
-            resultado: paciente.getDatosPaciente(),
+            mensaje: `Se actualizó el paciente de forma correcta.`,
+            resultado: {
+                uidCliente: uidCliente,
+                uidPaciente: uidPaciente,
+            },
         })
 
     } catch (error) {
@@ -120,6 +141,8 @@ controller.eliminarPaciente = async (req, res) => {
         })
 
     } catch (error) {
+        console.log('error', error)
+
         return res.status(500).json({
             codigo: 'ErrorServidor',
             mensaje: 'Hubo un problema.',

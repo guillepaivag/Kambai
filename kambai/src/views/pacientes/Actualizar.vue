@@ -36,12 +36,16 @@ export default {
         'formulario-paciente': FormularioPaciente
     },
     methods: {
-        actualizarPaciente ( data ) {
-            console.log('Actualizando paciente', {
+        async actualizarPaciente ( data ) {
+            let data2 = {
                 uidCliente: this.uidCliente,
-                uid: this.uid,
-                data
-            })
+                uidPaciente: this.uid,
+                datosPaciente: data
+            }
+
+            const res = await this.$store.dispatch('actualizarPaciente', data2)
+
+            this.$router.push(`/pacientes/paciente/${res.uidPaciente}/cliente/${res.uidCliente}`)
         }
     },
     async created() {

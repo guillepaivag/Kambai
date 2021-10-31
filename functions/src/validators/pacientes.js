@@ -13,6 +13,9 @@ validators.validarDatosRequeridos = [
         .notEmpty(),
     check("datosPaciente.fechaNacimiento")
         .notEmpty(),
+    (req, res, next) => {
+        validateResult(req, res, next)
+    }
 ]
 
 validators.validarDatosPaciente = [
@@ -49,6 +52,7 @@ validators.validarDatosPaciente = [
         .isString(),
     check('datosPaciente.ultimoCelo')
         .if(body('datosPaciente.ultimoCelo').exists())
+        .if(body('datosPaciente.ultimoCelo').notEmpty())
         .isNumeric(),
     check('datosPaciente.chip')
         .if(body('datosPaciente.chip').exists())

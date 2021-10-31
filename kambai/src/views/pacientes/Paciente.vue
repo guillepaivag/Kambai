@@ -46,7 +46,7 @@
                     Se eliminará el cliente de forma permanente, para eliminar ingrese la id unica del cliente.
                 </v-card-text>
                 <v-card-text class="mt-5">
-                    ¿Deseas eliminar este cliente? {{uid}}
+                    ¿Deseas eliminar este cliente? <b>{{uid}}</b>
                 </v-card-text>
 
                 <div class="container text-center" max-width="400px">
@@ -102,11 +102,14 @@ export default {
         'formulario-paciente': FormularioPaciente
     },
     methods: {
-        eliminar () {
-            console.log('Eliminando paciente', {
+        async eliminar () {
+            let data = {
                 uidCliente: this.uidCliente,
-                uid: this.uid,
-            })
+                uidPaciente: this.uid,
+            }
+
+            await this.$store.dispatch('eliminarPaciente', data)
+
             this.estadoDialogController = false
             this.$router.push('/pacientes')
         }

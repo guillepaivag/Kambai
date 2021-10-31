@@ -93,7 +93,7 @@ export default {
     return {
       menus: [
         { title: "Perfil", icon: "mdi-account", to: '/perfil' },
-        { title: "Configuraciones", icon: "mdi-cog", to: '/configuraciones' },
+        // { title: "Configuraciones", icon: "mdi-cog", to: '/configuraciones' },
       ],
       items: [
         {

@@ -178,10 +178,10 @@ class Paciente {
 
     setPEDIGREE (pedigree) {
         if (!pedigree) {
-            this.especie = false
+            this.pedigree = false
             return
         }
-        this.especie = especie
+        this.pedigree = pedigree
     }
 
     setFALLECIO (fallecio) {
@@ -304,7 +304,7 @@ class Paciente {
 
         // asumimos que ya los datos son los que se quiere actualizar
         const res = await admin.firestore().collection('Usuarios').doc(uidUsuario).collection('Clientes').doc(uidCliente)
-                    .collection('Pacientes').doc(this.uid).update(datosPaciente);
+                    .collection('Pacientes').doc(this.uid).update(datosPaciente)
 
         return this
     }

@@ -7,6 +7,7 @@
     "start": "npm run shell",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
+    "feProd": "cd .. && firebase emulators:start --only functions",
     "fe": "cd .. && firebase emulators:start --only hosting,functions,firestore,auth,ui --import=./emulator-data --export-on-exit=./emulator-data"
   },
   "engines": {
@@ -14,6 +15,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-validator": "^6.12.2",
     "firebase-admin": "^9.12.0",

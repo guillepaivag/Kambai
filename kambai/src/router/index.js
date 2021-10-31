@@ -30,7 +30,7 @@ const routes = [
   ...rutasClientes,
   ...rutasPacientes,
   // ...rutasHerramientas,
-  ...rutasConfiguraciones,
+  // ...rutasConfiguraciones,
   ...rutasPerfil,
   {
     path: '*',

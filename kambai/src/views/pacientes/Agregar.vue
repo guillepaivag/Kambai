@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { fb, db } from '../../plugins/firebase'
 import FormularioPaciente from '@/components/formularios/FormularioPaciente'
 export default {
     name: '',
@@ -17,8 +18,12 @@ export default {
         'formulario-paciente': FormularioPaciente
     },
     methods: {
-        agregarPaciente(datos) {
-            console.log('Agregando paciente...', datos)
+        async agregarPaciente(datosPaciente) {
+            const data = await this.$store.dispatch('agregarPaciente', {
+                datosPaciente
+            })
+
+            this.$router.push(`/pacientes/paciente/${data.uidPaciente}/cliente/${data.uidCliente}`)
         }
     },
 }

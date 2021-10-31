@@ -5,10 +5,11 @@
             <b class="titulo">Cliente</b>
             <v-spacer></v-spacer>
             <v-btn
+                disabled
                 small
                 rounded
                 color="blue"
-                dark
+                class="white--text"
                 to="/clientes/agregar"
             >
                 Nuevo cliente

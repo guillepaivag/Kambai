@@ -910,8 +910,6 @@ export default {
                 // Sexo
                 this.sexoSeleccionado = this.sexos.find(sexo => sexo.value === this.datosPaciente.sexo)
 
-                alert(this.especies.find(especie => especie.value === this.datosPaciente.especie))
-
                 // Especie
                 this.especieSeleccionada = this.especies.find(especie => especie.value === this.datosPaciente.especie)
             }
@@ -972,9 +970,18 @@ export default {
 
         // Leer y actualizar: Insertar cliente
         if (this.operacion !== 'agregar') {
+            // Cliente
             const cliente = this.clientes.find(cliente => cliente.uid === this.datosPaciente.uidCliente)
 
             this.clienteSeleccionado = `${cliente.ci} - ${cliente.nombre}`
+            this.busquedorCliente = `${cliente.ci} - ${cliente.nombre}`
+            this.clientesTextTemp = JSON.parse( JSON.stringify( this.clientesText ) )
+
+            // Sexo
+            this.sexoSeleccionado = this.sexos.find(sexo => sexo.value === this.datosPaciente.sexo)
+
+            // Especie
+            this.especieSeleccionada = this.especies.find(especie => especie.value === this.datosPaciente.especie)
         }
 
         // Agregar por cliente

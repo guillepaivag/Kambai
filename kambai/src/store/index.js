@@ -6,6 +6,8 @@ import  createPersistedState  from  'vuex-persistedstate'
 Vue.use(Vuex)
 
 import usuarios from './modules/usuarios'
+import pacientes from './modules/pacientes'
+import clientes from './modules/clientes'
 
 export default new Vuex.Store({
   state: {
@@ -28,6 +30,8 @@ export default new Vuex.Store({
     createPersistedState()
   ],
   modules: {
-    usuarios
+    usuarios,
+    pacientes,
+    clientes,
   }
 })

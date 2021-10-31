@@ -1,7 +1,7 @@
 const apiKambai = {
     url: process.env.NODE_ENV === 'development' ? 
-        'http://localhost:5001/sistemareclamosande2021/southamerica-east1/appReucord/api' : 
-        'https://southamerica-east1-sistemareclamosande2021.cloudfunctions.net/appReucord/api'
+        'http://localhost:5001/kambai/southamerica-east1/kambaiApi' : 
+        'https://southamerica-east1-kambai.cloudfunctions.net/kambaiApi'
 }
 
 export default apiKambai

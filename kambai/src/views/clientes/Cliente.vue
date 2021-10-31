@@ -4,6 +4,7 @@
         <div class="container mb-5">
             <v-row>
                 <v-btn
+                    disabled
                     depressed
                     color="blue"
                     class="white--text"
@@ -52,7 +53,7 @@
                     Se eliminará el cliente de forma permanente, para eliminar ingrese la id unica del cliente.
                 </v-card-text>
                 <v-card-text class="mt-5">
-                    ¿Deseas eliminar este cliente? {{uidCliente}}
+                    ¿Deseas eliminar este cliente? <b>{{uidCliente}}</b>
                 </v-card-text>
 
                 <div class="container text-center" max-width="400px">
@@ -118,8 +119,13 @@ export default {
         'datos-clientes': DatosClientes
     },
     methods: {
-        eliminar () {
-            console.log('Eliminando cliente', this.uidCliente)
+        async eliminar () {
+            const data = {
+                uidCliente: this.$route.params.uid
+            }
+
+            await this.$store.dispatch('eliminarCliente', data)
+
             this.estadoDialogController = false
             this.$router.push('/clientes')
         }

@@ -71,11 +71,11 @@ export default {
         //   text: "Herramientas",
         //   link: "/herramientas"
         // },
-        {
-          icon: "mdi-cog",
-          text: "Configuraciones",
-          link: "/configuraciones"
-        },
+        // {
+        //   icon: "mdi-cog",
+        //   text: "Configuraciones",
+        //   link: "/configuraciones"
+        // },
       ],
     };
   },
