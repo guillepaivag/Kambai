@@ -8,7 +8,9 @@ Vue.use(VueRouter)
 import rutasAutenticacion from '@/router/utils/autenticacion' 
 import rutasClientes from '@/router/utils/clientes' 
 import rutasPacientes from '@/router/utils/pacientes' 
+import rutasPerfil from '@/router/utils/perfil' 
 import rutasHerramientas from '@/router/utils/herramientas' 
+import rutasConfiguraciones from '@/router/utils/configuraciones' 
 
 // Middlewares
 import autenticado from '@/middleware/autenticado'
@@ -27,7 +29,9 @@ const routes = [
   ...rutasAutenticacion,
   ...rutasClientes,
   ...rutasPacientes,
-  ...rutasHerramientas,
+  // ...rutasHerramientas,
+  // ...rutasConfiguraciones,
+  ...rutasPerfil,
   {
     path: '*',
     name: 'NotFound',

@@ -5,7 +5,7 @@ const rutas = []
 rutas.push({
     path: '/clientes',
     name: 'ClienteIndex',
-    component: () => import('../../views/clientes/index'),
+    component: () => import('../../views/clientes'),
     meta: {
         title: 'Clientes - kambai',
         middleware: autenticado
@@ -14,7 +14,7 @@ rutas.push({
 
 rutas.push({
     path: '/clientes/agregar',
-    name: 'Cliente',
+    name: 'ClienteAgregar',
     component: () => import('../../views/clientes/Agregar'),
     meta: {
         title: 'Agregar cliente - kambai',
@@ -23,11 +23,21 @@ rutas.push({
 })
 
 rutas.push({
-    path: '/clientes/:uid',
+    path: '/clientes/cliente/:uid',
     name: 'Cliente',
     component: () => import('../../views/clientes/Cliente'),
     meta: {
         title: 'Cliente - kambai',
+        middleware: autenticado
+    }
+})
+
+rutas.push({
+    path: '/clientes/actualizar/:uid',
+    name: 'ClienteActualizar',
+    component: () => import('../../views/clientes/Actualizar'),
+    meta: {
+        title: 'Actualizar cliente - kambai',
         middleware: autenticado
     }
 })

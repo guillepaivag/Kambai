@@ -6,7 +6,7 @@
                     <h3>Dashboard</h3>
                 </v-col>
                 <v-col lg="5" cols="12">
-                    <!-- <v-btn color="indigo" class="white--text">
+                    <!-- <v-btn color="blue" class="white--text">
                         Certificados 
                     </v-btn> -->
                 </v-col>
@@ -15,9 +15,11 @@
         <br>
         <v-row>
             <v-col lg="7" cols="12">
-                <v-alert dense text color="indigo">
+                <v-alert dense text color="blue">
                     ¡Bienvenid@ a Kambai! <strong>
-                        {{ $store.state.usuarios.usuario.nombreUsuario }}
+                        {{ $store.state.usuarios.usuario ? 
+                            $store.state.usuarios.usuario.nombreUsuario : ''
+                        }}
                     </strong>
                 </v-alert>
                 <v-row>
@@ -25,11 +27,16 @@
                         <v-card elevation="2" class="rounded-lg">
                             <v-card-text class="d-flex justify-space-between align-center">
                                 <div>
-                                    <strong>{{ item.title }}</strong> <br>
-                                    <span>Hace 3 semanas</span>
+                                    <strong>
+                                        <v-icon color="blue">{{ item.icon }}</v-icon>
+                                        {{ item.title }}
+                                    </strong> <br>
+                                    <span>Informativo</span>
                                 </div>
-                                <v-avatar size="60" :color="item.color" style="border: 3px solid #444">
-                                    <span style="color: white">{{item.amount}} +</span>
+                                <v-avatar size="70" :color="item.color" style="border: 3px solid #444">
+                                    <span style="color: white; font-size: 18px;">
+                                        {{item.amount}}
+                                    </span>
                                 </v-avatar>
                             </v-card-text>
                             <v-card-actions class="d-flex justify-space-between">
@@ -42,10 +49,10 @@
             </v-col>
             <v-col cols="12" lg="5">
                 <v-card>
-                    <v-card-title>Registro de actividades</v-card-title>
+                    <!-- <v-card-title>Registro de actividades</v-card-title>
                     <v-card-text class="py-0">
                         <v-timeline align-top dense>
-                            <v-timeline-item color="indigo" small>
+                            <v-timeline-item color="blue" small>
                                 <strong>Hace 5 minutos</strong>
                                 <div class="text-caption">
                                    Se registró un paciente
@@ -58,14 +65,20 @@
                                 </div>
                             </v-timeline-item>
 
-                            <v-timeline-item color="indigo" small>
+                            <v-timeline-item color="blue" small>
                                 <strong>Hace 45 minutos</strong>
                                 <div class="text-caption">
                                     Se generó un certificado/consentimiento
                                 </div>
                             </v-timeline-item>
                         </v-timeline>
-                    </v-card-text>
+                    </v-card-text> -->
+                    <v-date-picker
+                    v-model="hoy"
+                    full-width
+                    color="blue"
+                    class=""
+                    ></v-date-picker>
                 </v-card>
             </v-col>
         </v-row>
@@ -78,9 +91,9 @@
         data() {
             return {
                 activityLog: [
-                    {title: 'Total de clientes', amount: 50, icon: 'mdi-account', color: 'indigo darken-3'},
-                    {title: 'Total de pacientes', amount: 3433, icon: 'mdi-account-group-outline', color: 'green darken-1'},
-                    // {title: 'Total de Certificados y consentimientos', amount: 3433, icon: 'mdi-account-group-outline', color: 'indigo darken-3'},
+                    {title: 'Total de clientes', amount: 0, icon: 'mdi-account-box', color: 'blue darken-3'},
+                    {title: 'Total de pacientes', amount: 0, icon: 'mdi-cat', color: 'green darken-1'},
+                    // {title: 'Total de Certificados y consentimientos', amount: 3433, icon: 'mdi-account-group-outline', color: 'blue darken-3'},
                     // {
                     //     title: 'Pending Orders',
                     //     amount: 3433,
@@ -88,14 +101,20 @@
                     //     color: 'deep-orange darken-1'
                     // },
                 ],
+                hoy: new Date().toISOString().substr(0, 10)
             }
         },
         methods: {
             onButtonClick(item) {
                 console.log('click on ' + item.no)
             }
-        }
-
+        },
+        mounted() {
+            if (this.$store.getters.estaAutenticado) {
+                this.activityLog[0].amount = this.$store.state.usuarios.usuario.cantidadClientes
+                this.activityLog[1].amount = this.$store.state.usuarios.usuario.cantidadPacientes
+            }
+        },
     }
 </script>
 

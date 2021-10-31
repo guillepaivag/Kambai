@@ -1,23 +1,12 @@
 import Vue from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
-import './plugins/firebase'
-import vuetify from './plugins/vuetify'
-import './plugins/router-middleware'
 import router from './router'
 import store from './store'
-
-// AXIOS
-import axios from 'axios'
-import VueAxios from 'vue-axios'
-
-// REUCORD API
-import apiKambai from './config/api-kambai'
-
-axios.defaults.baseURL = apiKambai.url
-export const axiosRequest = axios
-
-Vue.use(VueAxios, axios)
+import './plugins/firebase'
+import vuetify from './plugins/vuetify'
+import './plugins/axios'
+import './plugins/router-middleware'
 
 Vue.config.productionTip = false
 
@@ -25,5 +14,12 @@ new Vue({
   store,
   router,
   vuetify,
-  render: h => h(App)
+  render: h => h(App),
+  created() {
+    this.$store.watch(myStore => {
+      if (!myStore.usuarios.usuario && this.$route.fullPath !== '/autenticacion/inicio-sesion') {
+        this.$router.push('/autenticacion/inicio-sesion')
+      }
+    })
+  }
 }).$mount('#app')

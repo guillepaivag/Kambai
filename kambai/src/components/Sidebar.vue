@@ -26,7 +26,7 @@
       <v-list-item-group
         v-model="model"
         mandatory
-        color="indigo"
+        color="blue"
       >
         <v-list-item v-for="(item, index) in links" :key="index" :to="item.link" active-class="text--blue">
           <v-list-item-icon>
@@ -37,7 +37,9 @@
             <v-list-item-title>{{ item.text }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
       </v-list-item-group>
+
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -60,20 +62,20 @@ export default {
           link: "/clientes"
         },
         {
-          icon: "mdi-card-account-details-outline",
+          icon: "mdi-cat",
           text: "Pacientes",
           link: "/pacientes"
         },
-        {
-          icon: "mdi-tools",
-          text: "Herramientas",
-          link: "/herramientas"
-        },
-        {
-          icon: "mdi-cog",
-          text: "Configuraciones",
-          link: "/configuraciones"
-        },
+        // {
+        //   icon: "mdi-tools",
+        //   text: "Herramientas",
+        //   link: "/herramientas"
+        // },
+        // {
+        //   icon: "mdi-cog",
+        //   text: "Configuraciones",
+        //   link: "/configuraciones"
+        // },
       ],
     };
   },

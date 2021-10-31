@@ -1,7 +1,7 @@
 const functions = require('firebase-functions')
 
-// // NUXT SSR
-// const appNuxt = require('./appNuxt')
+// FUNCTIONS
+const incrementarCantidadPaciente = require('./src/functions/paciente')
 
 // REST-API DE KAMBAI
 const kambaiApi = require('./kambaiApi')

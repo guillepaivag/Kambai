@@ -3,7 +3,7 @@
     <div v-if="estaAutenticado">
       <Sidebar />
       <Topbar />
-      <v-main style="background: #f5f5f540">
+      <v-main>
         <v-container class="py-8 px-6" fluid>
           <router-view></router-view>
         </v-container>

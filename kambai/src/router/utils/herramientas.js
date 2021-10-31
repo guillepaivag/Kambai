@@ -5,7 +5,7 @@ const rutas = []
 rutas.push({
     path: '/herramientas',
     name: 'Herramientas',
-    component: () => import('../../views/herramientas/index'),
+    component: () => import('../../views/herramientas'),
     meta: {
         title: 'Herramientas - kambai',
         middleware: autenticado
