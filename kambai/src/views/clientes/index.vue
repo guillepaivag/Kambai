@@ -5,7 +5,6 @@
             <b class="titulo">Cliente</b>
             <v-spacer></v-spacer>
             <v-btn
-                disabled
                 small
                 rounded
                 color="blue"
@@ -65,16 +64,6 @@
 
         <v-divider />
 
-        <!-- <div class="mt-5">
-            <v-btn
-                rounded
-                color="blue"
-                dark
-            >
-                Agregar cliente
-            </v-btn>
-        </div> -->
-
         <v-progress-linear
             :active="buscando"
             :indeterminate="buscando"
@@ -82,7 +71,6 @@
             color="blue"
         ></v-progress-linear>
         <v-simple-table class="mt-5">
-
             <template v-slot:default>
                 <thead>
                     <tr>
@@ -105,16 +93,16 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in clientes"
-                        :key="item.name"
+                        v-for="cliente in clientes"
+                        :key="cliente.uid"
                     >
-                        <td>{{ item.ci }}</td>
-                        <td>{{ item.nombre }}</td>
-                        <td>{{ item.correo }}</td>
-                        <td>{{ item.telefono }}</td>
+                        <td>{{ cliente.ci }}</td>
+                        <td>{{ cliente.nombre }}</td>
+                        <td>{{ cliente.correo }}</td>
+                        <td>{{ cliente.telefono }}</td>
                         <td>
                             <v-btn
-                                :to="`/clientes/cliente/${item.uid}`"
+                                :to="`/clientes/cliente/${cliente.uid}`"
                                 small
                                 rounded
                                 color="blue"
@@ -151,7 +139,7 @@
 </template>
 
 <script>
-import { fb, db } from '@/plugins/firebase'
+import { fb, db } from '../../plugins/firebase'
 
 export default {
     name: 'ClienteIndex',
@@ -162,57 +150,57 @@ export default {
                 correo: '',
                 ci: '',
             },
-            MAXIMO_USUARIOS: 1,
+            MAXIMO: 2,
+            pagina: 0,
             ultimoDocumento: null,
             existeMasDatos: false,
+            clientesTotalesFiltrados: [],
             clientes: [],
             buscando: true,
         }
     },
     methods: {
-        async inicializarLista () {
+        inicializarLista () {
             const {
                 nombre,
                 correo,
                 ci,
             } = this.input
-            const clientesAux = []
-            this.clientes = []
-            this.ultimoDocumento = null
-            this.buscando = true
 
-            let ref = db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid).collection('Clientes')
-            ref = this.filtrar( ref, this.input )
-            ref = ref.limit( this.MAXIMO_USUARIOS )
-            const documentSnapshots = await ref.get()
-            this.ultimoDocumento = documentSnapshots.docs[documentSnapshots.docs.length-1]
-            for (let i = 0; i < documentSnapshots.docs.length; i++) {
-                const element = documentSnapshots.docs[i]
-                clientesAux.push( element.data() )
-            }
-            if (clientesAux.length) {
-                await this.verificarSiHayMasDatos()
-                this.clientes = clientesAux
-            }
-            this.buscando = false
-        },
-        async paginar () {
-            const clientesAux = JSON.parse( JSON.stringify( this.clientes ) )
             this.buscando = true
-            
-            let ref = db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid).collection('Clientes')
-                .startAfter(this.ultimoDocumento)
-            ref = this.filtrar( ref, this.input )
-            ref = ref.limit(this.MAXIMO_USUARIOS)
-            const documentSnapshots = await ref.get()
-            this.ultimoDocumento = documentSnapshots.docs[documentSnapshots.docs.length-1]
-            for (let i = 0; i < documentSnapshots.docs.length; i++) {
-                const element = documentSnapshots.docs[i]
-                clientesAux.push( element.data() )
+            fb.firestore()
+            .collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid)
+            .collection('Clientes').onSnapshot(snapshot => {
+                this.pagina = 0
+                this.$store.state.clientes.listaClientes = []
+                this.clientesTotalesFiltrados = []
+                snapshot.docs.forEach(doc => {
+                    this.$store.state.clientes.listaClientes.push( doc.data() )
+                    this.clientesTotalesFiltrados.push( doc.data() )
+                })
+
+                this.paginar()
+                this.buscando = false
+            })
+        },
+        paginar () {
+            this.pagina++
+
+            let indexInicio = (this.pagina - 1) * this.MAXIMO
+            let indexFin = indexInicio + ( this.MAXIMO - 1 )
+
+            if (!indexInicio) { 
+                this.filtrar()
+                this.clientes = []
             }
-            await this.verificarSiHayMasDatos()
-            this.clientes = clientesAux
-            this.buscando = false
+            
+            const cantidadClientes = this.clientesTotalesFiltrados.length
+            for (let i = indexInicio; i <= indexFin && i < cantidadClientes; i++) {
+                const cliente = this.clientesTotalesFiltrados[i]
+                this.clientes.push( cliente )
+            }
+
+            this.verificarSiHayMasDatos()
         },
         filtrar ( ref, datosBusqueda ) {
             const {
@@ -220,25 +208,55 @@ export default {
                 correo,
                 ci,
             } = this.input
-            if ( nombre ) {
-                ref = ref.where('nombre', '==', nombre)
-            }
-            if ( correo ) {
-                ref = ref.where('correo', '==', correo)
-            }
-            if ( ci ) {
-                ref = ref.where('ci', '==', parseInt(ci))
+
+            if (!nombre && !correo && !ci) {
+                return
             }
 
-            return ref
+            let arrNombre, arrCorreo, arrCI
+            this.clientesTotalesFiltrados = []
+
+            if ( nombre ) {
+                const res = this.$store.state.clientes.listaClientes.filter(cliente => {
+                    return cliente.nombre.toLowerCase().includes(nombre.toLowerCase())
+                })
+                arrNombre = []
+                arrNombre.push(...res)
+            }
+
+            if ( correo ) {
+                const res = this.$store.state.clientes.listaClientes.filter(cliente => {
+                    return cliente.correo.toLowerCase().includes(correo.toLowerCase())
+                })
+                arrCorreo = []
+                arrCorreo.push(...res)
+            }
+
+            if (ci != undefined) {
+
+                const res = this.$store.state.clientes.listaClientes.filter(cliente => {
+                    return String(cliente.ci).toLowerCase().includes(String(ci).toLowerCase())
+                })
+                arrCI = []
+                arrCI.push(...res)
+            }
+
+            if( !arrNombre && !arrCorreo && !arrCI ){
+                return
+            }
+
+            arrNombre === undefined ? arrNombre = this.$store.state.clientes.listaClientes : ''
+            arrCorreo === undefined ? arrCorreo = this.$store.state.clientes.listaClientes : ''
+            arrCI === undefined ? arrCI = this.$store.state.clientes.listaClientes : ''
+            
+            this.clientesTotalesFiltrados = arrNombre.filter(v => JSON.stringify(arrCorreo).includes(JSON.stringify(v)))
+            this.clientesTotalesFiltrados = this.clientesTotalesFiltrados.filter(v => JSON.stringify(arrCI).includes(JSON.stringify(v)))
         },
         async verificarSiHayMasDatos () {
-            let ref = db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid).collection('Clientes')
-                .startAfter(this.ultimoDocumento)
-            ref = this.filtrar( ref, this.input )
-            ref = ref.limit(1)
-            const siguienteDato = await ref.get()
-            this.existeMasDatos = !siguienteDato.empty
+            const cantidadClientes = this.clientesTotalesFiltrados.length
+            let indexInicioSiguiente = this.pagina * this.MAXIMO
+
+            this.existeMasDatos = indexInicioSiguiente <= cantidadClientes - 1
         },
     },
     async created() {

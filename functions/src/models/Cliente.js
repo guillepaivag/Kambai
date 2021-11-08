@@ -137,8 +137,17 @@ class Cliente {
     async agregar (uidUsuario) {
         
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uid válida.")
-        
+
         const documento = await admin.firestore().collection(`Usuarios/${uidUsuario}/Clientes`).add(this.getDatosCliente())
+        
+        // Actualizar la uid
+        const ref = admin.firestore().collection(`Usuarios/${uidUsuario}/Clientes`).doc(documento.id)
+        const data = (await ref.get()).data()
+
+        //aumentamos la cantidad de clientes
+        ref.update({
+            uid: documento.id
+        })
 
         this.setUID(documento.id)
         
@@ -150,18 +159,20 @@ class Cliente {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
 
         // asumimos que ya los datos son los que se quiere actualizar
-        const res = await db.collection('Usuarios').doc(uidUsuario).collection('Clientes').doc(this.uid)
-                    .update(datosCliente);
+        const res = await admin.firestore().collection('Usuarios').doc(uidUsuario)
+                    .collection('Clientes').doc(this.uid).update(datosCliente);
 
         return this
     }
+
 
     async borrar (uidUsuario, uidCliente) {
 
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
         if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
 
-        const res = await db.collection('Usuarios').doc(uidUsuario).collection('Clientes').doc(this.uid).delete()
+        const res = await admin.firestore().collection('Usuarios').doc(uidUsuario)
+        .collection('Clientes').doc(uidCliente).delete()
 
         return this
     }

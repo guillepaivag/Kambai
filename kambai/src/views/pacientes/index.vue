@@ -176,7 +176,7 @@ export default {
                 { text: 'Hembra', value: 'hembra' },
                 { text: 'Macho', value: 'macho' },
             ],
-            MAXIMO: 1,
+            MAXIMO: 7,
             ultimoDocumento: null,
             existeMasDatos: false,
             lista: [],
@@ -248,7 +248,7 @@ export default {
             } = this.input
 
             if ( nombre ) {
-                ref = ref.where('nombre', '==', nombre)
+                ref = ref.where('nombrePaciente', '==', nombre)
             }
             if ( raza ) {
                 ref = ref.where('raza', '==', raza)

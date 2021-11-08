@@ -3,7 +3,7 @@ import { fb, db } from '@/plugins/firebase'
 
 export default {
     state: {
-        
+        listaClientes: []
     },
     mutations: {
         
@@ -16,7 +16,7 @@ export default {
                 })
                 
                 const body = {
-                    datosPaciente: data.datosPaciente,
+                    datosCliente: data.datosCliente,
                 }
                 
                 const config = {
@@ -26,11 +26,11 @@ export default {
                     }
                 }
     
-                const res = await axios.post('/pacientes/crearPaciente', body, config)
+                const res = await axios.post('/clientes/crearCliente', body, config)
                 
                 return {
-                    uidPaciente: res.data.resultado.uid,
-                    uidCliente: res.data.resultado.uidCliente,
+                    ci: res.data.resultado.ci,
+                    uidCliente: res.data.resultado.uid,
                 }
 
             } catch (error) {
@@ -44,7 +44,7 @@ export default {
                 })
                 
                 const body = {
-                    datosPaciente: data.datosPaciente,
+                    datosCliente: data.datosCliente,
                 }
                 
                 const config = {
@@ -54,10 +54,9 @@ export default {
                     }
                 }
     
-                const res = await axios.put(`/pacientes/actualizarPaciente/${data.uidCliente}/${data.uidPaciente}`, body, config)
+                const res = await axios.put(`/clientes/actualizarCliente/${data.uidCliente}`, body, config)
 
                 return {
-                    uidPaciente: res.data.resultado.uidPaciente,
                     uidCliente: res.data.resultado.uidCliente,
                 }
                 

@@ -27,7 +27,8 @@
                             :error-messages="ErroresNombrePaciente"
                             :counter="infoInput.nombrePaciente.max"
                             label="Nombre del paciente"
-                            :disabled="operacion === 'leer'"
+                            class="disable-events"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.nombrePaciente.$touch()"
                             @blur="$v.input.nombrePaciente.$touch()"
                         ></v-text-field>
@@ -46,7 +47,7 @@
                             flat
                             hide-no-data
                             label="Dueño (CI - Nombre)"
-                            :disabled="operacion === 'leer' || operacion === 'agregar' && identificadorCliente"
+                            :readonly="operacion === 'leer' || operacion === 'agregar' && identificadorCliente"
                             :error-messages="ErroresUidCliente"
                             @input="$v.input.uidCliente.$touch()"
                             @blur="$v.input.uidCliente.$touch()"
@@ -75,7 +76,7 @@
                                     readonly
                                     v-bind="attrs"
                                     v-on="on"
-                                    :disabled="operacion === 'leer'"
+                                    :readonly="operacion === 'leer'"
                                     :error-messages="ErroresFechaNacimiento"
                                     @input="$v.input.fechaNacimiento.$touch()"
                                     @blur="$v.input.fechaNacimiento.$touch()"
@@ -116,7 +117,7 @@
                             item-text="text"
                             item-value="value"
                             label="Especie"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             persistent-hint
                             return-object
                             single-line
@@ -130,7 +131,7 @@
                             v-model="input.raza"
                             :error-messages="ErroresRaza"
                             label="Raza"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.raza.$touch()"
                             @blur="$v.input.raza.$touch()"
                         ></v-text-field>
@@ -148,7 +149,7 @@
                             item-text="text"
                             item-value="value"
                             label="Sexo"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             persistent-hint
                             return-object
                             single-line
@@ -162,7 +163,7 @@
                             v-model="input.pelaje"
                             :error-messages="ErroresPelaje"
                             label="Pelaje"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.pelaje.$touch()"
                             @blur="$v.input.pelaje.$touch()"
                         ></v-text-field>
@@ -180,7 +181,7 @@
                             label="Peso"
                             min="0"
                             type="number"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.peso.$touch()"
                             @blur="$v.input.peso.$touch()"
                         ></v-text-field>
@@ -193,7 +194,7 @@
                             v-model="input.comida"
                             :error-messages="ErroresComida"
                             label="Comida"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.comida.$touch()"
                             @blur="$v.input.comida.$touch()"
                         ></v-textarea>
@@ -209,7 +210,7 @@
                             v-model="input.viviendaInfo"
                             :error-messages="ErroresViviendaInfo"
                             label="Vivienda / ¿Con qué otros animales convive?"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.viviendaInfo.$touch()"
                             @blur="$v.input.viviendaInfo.$touch()"
                         ></v-textarea>
@@ -238,7 +239,7 @@
                                     readonly
                                     v-bind="attrs"
                                     v-on="on"
-                                    :disabled="operacion === 'leer'"
+                                    :readonly="operacion === 'leer'"
                                     :error-messages="ErroresUltimoCelo"
                                     @input="$v.input.ultimoCelo.$touch()"
                                     @blur="$v.input.ultimoCelo.$touch()"
@@ -268,7 +269,7 @@
                             v-model="input.chip"
                             :error-messages="ErroresChip"
                             label="Chip"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.chip.$touch()"
                             @blur="$v.input.chip.$touch()"
                         ></v-text-field>
@@ -283,7 +284,7 @@
                         <v-checkbox
                             v-model="input.pedigree"
                             label="Pedigree"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             color="blue"
                             hide-details
                         ></v-checkbox>
@@ -295,7 +296,7 @@
                         <v-checkbox
                             v-model="input.fallecio"
                             label="Fallecio"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             color="blue"
                             hide-details
                         ></v-checkbox>
@@ -310,7 +311,7 @@
                         <v-checkbox
                             v-model="input.reproductor"
                             label="Reproductor"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             color="blue"
                             hide-details
                         ></v-checkbox>
@@ -322,7 +323,7 @@
                         <v-checkbox
                             v-model="input.castrado"
                             label="Castrado"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             color="blue"
                             hide-details
                         ></v-checkbox>
@@ -337,7 +338,7 @@
                         <v-checkbox
                             v-model="input.estaEnAdopcion"
                             label="Adopción"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             color="blue"
                             hide-details
                         ></v-checkbox>
@@ -354,7 +355,7 @@
                             type="number"
                             max="10"
                             min="0"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.agresividad.$touch()"
                             @blur="$v.input.agresividad.$touch()"
                         ></v-text-field>
@@ -370,7 +371,7 @@
                             v-model="input.patologias"
                             :error-messages="ErroresPatologias"
                             label="Patología preexistentes"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.patologias.$touch()"
                             @blur="$v.input.patologias.$touch()"
                         ></v-textarea>
@@ -997,6 +998,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

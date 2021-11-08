@@ -9,13 +9,25 @@ controller.crearCliente = async (req, res) => {
     const { uidSolicitante, datosAuthSolicitante } = kambaiDatos
 
     try {
+
         const cliente = new Cliente(datosCliente)
+        
+        //agrgamos en la base de datos
         const resultado = await cliente.agregar(uidSolicitante)
+
+        // Actualizar la cantidad
+        const ref = admin.firestore().collection('Usuarios').doc(uidSolicitante)
+        const data = (await ref.get()).data()
+
+        //aumentamos la cantidad de clientes
+        ref.update({
+            cantidadClientes: data.cantidadClientes + 1
+        })
 
         return res.status(200).json({
             codigo: 'Exito',
             mensaje: 'Se creo el cliente de forma correcta.',
-            resultado: usuario.getDatosUsuario(),
+            resultado: resultado,
         })
 
     } catch (error) {
@@ -27,14 +39,44 @@ controller.crearCliente = async (req, res) => {
     }
 }
 
+controller.actualizarCliente = async (req, res) => {
+
+    try {
+        const { kambaiDatos, params, body } = req
+        const { uidSolicitante, datosAuthSolicitante } = kambaiDatos
+        const { uidCliente } = params
+        const { datosCliente } = body
+
+        const cliente = new Cliente(datosCliente)
+
+        // Actualización normal de datos del paciente
+        await cliente.actualizar(uidSolicitante, datosCliente)
+
+        return res.status(200).json({
+            codigo: 'Exito',
+            mensaje: `Se actualizó el cliente de forma correcta.`,
+            resultado: {
+                uidCliente: uidCliente,
+            },
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            codigo: 'ErrorServidor',
+            mensaje: 'Hubo un problema al actualizar cliente.',
+            resultado: error,
+        })
+    }
+}
+
 controller.eliminarCliente = async (req, res) => {
     try {
         const { kambaiDatos, params } = req
         const { uidSolicitante, datosAuthSolicitante } = kambaiDatos
         const { uidCliente } = params
 
-        let ref = admin.firestore().collection('Usuarios').doc(uidSolicitante)
-        .collection('Clientes').doc(uidCliente)
+        let refUsuario = admin.firestore().collection('Usuarios').doc(uidSolicitante)
+        let ref = refUsuario.collection('Clientes').doc(uidCliente)
 
         let cantidadPacientesEliminados = 0
 
@@ -50,10 +92,9 @@ controller.eliminarCliente = async (req, res) => {
         ref.delete()
 
         // Actualizar la cantidad
-        const ref2 = admin.firestore().collection('Usuarios').doc(uidSolicitante)
-        const data = (await ref2.get()).data()
+        const data = (await refUsuario.get()).data()
 
-        ref2.update({
+        refUsuario.update({
             cantidadPacientes: data.cantidadPacientes - cantidadPacientesEliminados,
             cantidadClientes: data.cantidadClientes - 1
         })
