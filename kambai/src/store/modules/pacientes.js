@@ -3,7 +3,7 @@ import { fb, db } from '@/plugins/firebase'
 
 export default {
     state: {
-        
+        listaPacientes: []
     },
     mutations: {
         

@@ -109,7 +109,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in lista"
+                        v-for="item in pacientes"
                         :key="item.name"
                     >
                         <td>{{ item.nombrePaciente }}</td>
@@ -155,7 +155,7 @@
 </template>
 
 <script>
-import { fb, db } from '@/plugins/firebase'
+import { fb, db } from '../../plugins/firebase'
 
 export default {
     name: '',
@@ -170,17 +170,19 @@ export default {
                 especie: '',
                 sexo: '',
             },
-            sexoSelect: { text: 'Ninguno', value: '' },
+            sexoSelect: { text: 'Sexo', value: undefined },
             sexos: [
-                { text: 'Ninguno', value: '' },
-                { text: 'Hembra', value: 'hembra' },
-                { text: 'Macho', value: 'macho' },
+                { text: 'Sexo', value: undefined },
+                { text: 'Hembra', value: false },
+                { text: 'Macho', value: true },
             ],
             MAXIMO: 7,
             ultimoDocumento: null,
             existeMasDatos: false,
-            lista: [],
+            pacientes: [],
             buscando: false,
+            pacientesTotalesFiltrados: [],
+            pagina: 0,
         }
     },
     watch: {
@@ -189,55 +191,61 @@ export default {
         }
     },
     methods: {
-        async inicializarLista () {
-            const listaAux = []
-            this.lista = []
-            this.ultimoDocumento = null
+        inicializarLista () {
+
+            const {
+                nombre,
+                correo,
+                ci,
+            } = this.input
+
             this.buscando = true
 
             const veterinarioRef = fb.firestore().doc(`Usuarios/${this.$store.state.usuarios.usuario.uid}`)
 
-            let ref =  db.collectionGroup('Pacientes')
+
+            db.collectionGroup('Pacientes')
             .orderBy(fb.firestore.FieldPath.documentId())
             .startAt(veterinarioRef.path)
             .endAt(veterinarioRef.path + "\uf8ff")
-            ref = this.filtrar( ref, this.input )
-            ref = ref.limit( this.MAXIMO )
-            
-            const documentSnapshots = await ref.get()
-            this.ultimoDocumento = documentSnapshots.docs[documentSnapshots.docs.length-1]
-            for (let i = 0; i < documentSnapshots.docs.length; i++) {
-                const element = documentSnapshots.docs[i]
-                listaAux.push( element.data() )
-            }
-            if (listaAux.length) {
-                await this.verificarSiHayMasDatos()
-                this.lista = listaAux
-            }
-            this.buscando = false
-        },
-        async paginar () {
-            const listaAux = JSON.parse( JSON.stringify( this.lista ) )
-            this.buscando = true
+            .onSnapshot(snapshot => {
 
-            const veterinarioRef = fb.firestore().doc(`Usuarios/${this.$store.state.usuarios.usuario.uid}`)
-            
-            let ref =  db.collectionGroup('Pacientes')
-            .orderBy(fb.firestore.FieldPath.documentId())
-            // .startAt(veterinarioRef.path)
-            .startAfter(this.ultimoDocumento)
-            .endAt(veterinarioRef.path + "\uf8ff")
-            ref = this.filtrar( ref, this.input )
-            ref = ref.limit(this.MAXIMO)
-            const documentSnapshots = await ref.get()
-            this.ultimoDocumento = documentSnapshots.docs[documentSnapshots.docs.length-1]
-            for (let i = 0; i < documentSnapshots.docs.length; i++) {
-                const element = documentSnapshots.docs[i]
-                listaAux.push( element.data() )
+                //console.log(snapshot.docs)
+
+                this.pagina = 0
+                this.$store.state.pacientes.listaPacientes = []
+                this.pacientesTotalesFiltrados = []
+                snapshot.docs.forEach(doc => {
+                    this.$store.state.pacientes.listaPacientes.push( doc.data() )
+                    this.pacientesTotalesFiltrados.push( doc.data() )
+                })
+
+                this.paginar()
+                this.buscando = false
+            })
+ 
+
+        },
+        paginar () {
+
+            this.pagina++
+
+            let indexInicio = (this.pagina - 1) * this.MAXIMO
+            let indexFin = indexInicio + ( this.MAXIMO - 1 )
+
+            if (!indexInicio) { 
+                this.filtrar()
+                this.pacientes = []
             }
-            await this.verificarSiHayMasDatos()
-            this.lista = listaAux
-            this.buscando = false
+            
+            const cantidadPacientes = this.pacientesTotalesFiltrados.length
+            for (let i = indexInicio; i <= indexFin && i < cantidadPacientes; i++) {
+                const paciente = this.pacientesTotalesFiltrados[i]
+                this.pacientes.push( paciente )
+            }
+
+            this.verificarSiHayMasDatos()
+
         },
         filtrar ( ref, datosBusqueda ) {
             const {
@@ -247,33 +255,67 @@ export default {
                 sexo
             } = this.input
 
-            if ( nombre ) {
-                ref = ref.where('nombrePaciente', '==', nombre)
+            if ( !nombre && !raza && !especie && sexo === undefined) {
+                return
             }
-            if ( raza ) {
-                ref = ref.where('raza', '==', raza)
-            }
-            if ( especie ) {
-                ref = ref.where('especie', '==', especie)
-            }
-            if ( sexo ) {
-                ref = ref.where('sexo', '==', sexo === 'macho')
+            
+            let arrNombre, arrRaza, arrEspecie, arrSexo
+            this.pacientesTotalesFiltrados = []
+
+            if(nombre){
+                const res = this.$store.state.pacientes.listaPacientes.filter(paciente => {
+                    return paciente.nombrePaciente.toLowerCase().includes(nombre.toLowerCase())
+                })
+                arrNombre = []
+                arrNombre.push(...res)
             }
 
-            return ref
+            if(raza){
+                const res = this.$store.state.pacientes.listaPacientes.filter(paciente => {
+                    return paciente.raza.toLowerCase().includes(raza.toLowerCase())
+                })
+                arrRaza = []
+                arrRaza.push(...res)
+            }
+
+            if(especie){
+
+                const res = this.$store.state.pacientes.listaPacientes.filter(paciente => {
+                    return paciente.especie.toLowerCase().includes(especie.toLowerCase())
+                })
+                arrEspecie = []
+                arrEspecie.push(...res)
+            }
+
+            if(sexo !== undefined) {
+                const res = this.$store.state.pacientes.listaPacientes.filter(paciente => {
+                    return paciente.sexo === sexo
+                })
+                arrSexo = []
+                arrSexo.push(...res)
+            }
+
+            if( !arrNombre && !arrRaza && !arrEspecie && !arrSexo){
+                return
+            } 
+
+            arrNombre === undefined ? arrNombre = this.$store.state.pacientes.listaPacientes : ''
+            arrRaza === undefined ? arrRaza = this.$store.state.pacientes.listaPacientes : ''
+            arrEspecie === undefined ? arrEspecie = this.$store.state.pacientes.listaPacientes : ''
+            arrSexo === undefined ? arrSexo = this.$store.state.pacientes.listaPacientes : ''
+            
+            this.pacientesTotalesFiltrados = arrNombre.filter(v => JSON.stringify(arrRaza).includes(JSON.stringify(v)))
+            this.pacientesTotalesFiltrados = this.pacientesTotalesFiltrados.filter(v => JSON.stringify(arrEspecie).includes(JSON.stringify(v)))
+            this.pacientesTotalesFiltrados = this.pacientesTotalesFiltrados.filter(v => JSON.stringify(arrSexo).includes(JSON.stringify(v)))
+
         },
         async verificarSiHayMasDatos () {
-            const veterinarioRef = fb.firestore().doc(`Usuarios/${this.$store.state.usuarios.usuario.uid}`)
-            
-            let ref =  db.collectionGroup('Pacientes')
-            .orderBy(fb.firestore.FieldPath.documentId())
-            // .startAt(veterinarioRef.path)
-            .startAfter(this.ultimoDocumento)
-            .endAt(veterinarioRef.path + "\uf8ff")
-            ref = this.filtrar( ref, this.input )
-            ref = ref.limit(1)
-            const siguienteDato = await ref.get()
-            this.existeMasDatos = !siguienteDato.empty
+
+            const cantidadPacientes = this.pacientesTotalesFiltrados.length
+            let indexInicioSiguiente = this.pagina * this.MAXIMO
+
+            this.existeMasDatos = indexInicioSiguiente <= cantidadPacientes - 1
+
         },
     },
     async created() {
