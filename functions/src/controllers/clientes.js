@@ -126,10 +126,6 @@ controller.importarDatos = async (req, res) => {
 
             const cliente = new Cliente(datoCliente)
 
-            
-            
-
-
             //agrgamos en la base de datos
             const resultado = await cliente.agregar(uidSolicitante)
 

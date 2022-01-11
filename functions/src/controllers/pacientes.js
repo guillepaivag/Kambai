@@ -153,8 +153,6 @@ controller.eliminarPaciente = async (req, res) => {
 
 controller.importarDatos = async (req, res) => {
 
-    console.log("inician los casos")
-
     const { kambaiDatos, body } = req
     const { datosPacientes } = body
     const { uidSolicitante, datosAuthSolicitante } = kambaiDatos
@@ -189,8 +187,6 @@ controller.importarDatos = async (req, res) => {
             if ( clientesResultadoFirestore.docs.length === 1 ) {
                 //agregamos sin drama
 
-                console.log("Caso 1")
-
                 uidCliente = clientesResultadoFirestore.docs[0].data().uid
 
                 const paciente = new Paciente(datoPaciente)
@@ -198,7 +194,7 @@ controller.importarDatos = async (req, res) => {
 
 
             } else if ( clientesResultadoFirestore.docs.length > 1 ) {
-                console.log("Caso 2")
+
                 //buscamos entre los elementos
                 let seHallo = false
 
@@ -211,7 +207,7 @@ controller.importarDatos = async (req, res) => {
                 clientesResultadoFirestore.docs.forEach( async (cliente) => {
 
                     if ( cliente.data().telefonoCelular.includes(telefonoCelularABuscar) && !seHallo) {
-                        console.log("Caso 2.1")
+
                         uidCliente = cliene.data.uid
 
                         const paciente = new Paciente(datoPaciente)
@@ -223,7 +219,6 @@ controller.importarDatos = async (req, res) => {
 
                 if ( !seHallo ) {
 
-                    console.log("Caso 2.3")
                     // agregar en pacientes problemas
                     const documento = await admin.firestore().collection(`Usuarios`).doc(uidSolicitante)
                     .collection("PacientesProblemas").add({
@@ -238,7 +233,6 @@ controller.importarDatos = async (req, res) => {
             } else {
 
                 // agregar en pacientes problemas
-                console.log("Caso 3")
 
                 const documento = await admin.firestore().collection(`Usuarios`).doc(uidSolicitante)
                 .collection("PacientesProblemas").add({

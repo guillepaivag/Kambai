@@ -58,7 +58,6 @@ middlewaresPs.obtenerListaPorExcel = async ( req, res, next ) => {
             
         }
 
-        console.log('rutaArchivoTemp 2', rutaArchivoTemp)
         // Borrar el archivo creado en el servidor
         fs.unlink(rutaArchivoTemp, (err => {
             if ( err ) {
@@ -66,8 +65,6 @@ middlewaresPs.obtenerListaPorExcel = async ( req, res, next ) => {
                 return
             }
         }))
-
-        console.log("Exitos", datosClientes)
         
         req.body.datosClientes = datosClientes
         
