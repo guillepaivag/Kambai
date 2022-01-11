@@ -1,5 +1,9 @@
 {
   "environment": {
     "mode": "development"
+  },
+  "algolia_service": {
+    "app_id": "P4AIFRX45K",
+    "api_key": "ed81cd42cfd39ca68328ab6dc943d2e2"
   }
 }

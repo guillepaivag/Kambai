@@ -2,30 +2,35 @@ const functions = require('firebase-functions')
 const admin = require('../../firebase-service')
 const algoliasearch = require('algoliasearch')
 
-const configJekuaa = require('../../configJekuaa')
+const configKambai = require('../../configKambai')
 
 const algoliaControllers = {}
 
-const INDEX_NAME = configJekuaa.environment.mode === 'production' ? 'blogs_prod' : 'blogs_dev'
+const INDEX_CLIENTES = configKambai.environment.mode === 'production' ? 'prod_clientes' : 'dev_clientes'
+const INDEX_PACIENTES = configKambai.environment.mode === 'production' ? 'prod_pacientes' : 'dev_pacientes'
 
-algoliaControllers.indexBlogAlgolia = 
-functions.region('southamerica-east1').firestore.document('Blogs/{blogId}').onWrite(async ( change, context ) => {
+algoliaControllers.indexAlgoliaClientes = 
+functions
+.region('southamerica-east1')
+.firestore
+.document('Usuarios/{uidUsuario}/Clientes/{uidCliente}')
+.onWrite(async ( change, context ) => {
     // "document" will be empty if it's deleted, otherwise, this contains
     // the updated values.
     const document = change.after.exists ? change.after.data() : null
     const oldDocument = change.before.exists ? change.before.data() : null
     
     // Get the document ID. This will be used as the ID for the indexed content.
-    const { blogId } = context.params
+    const { uidUsuario, uidCliente } = context.params
 
     // The API ID and key are stored using Cloud Functions config variables.
     // @see https://firebase.google.com/docs/functions/config-env
-    const ALGOLIA_APP_ID = configJekuaa.algolia_service.app_id
-    const ALGOLIA_API_KEY = configJekuaa.algolia_service.api_key
+    const ALGOLIA_APP_ID = configKambai.algolia_service.app_id
+    const ALGOLIA_API_KEY = configKambai.algolia_service.api_key
 
     // Create an Algolia Search API client.
     const client = algoliasearch.default(ALGOLIA_APP_ID, ALGOLIA_API_KEY)
-    const index = client.initIndex(INDEX_NAME)
+    const index = client.initIndex(INDEX_CLIENTES)
 
     async function deleteObject() {
         await index.deleteObject(blogId)
