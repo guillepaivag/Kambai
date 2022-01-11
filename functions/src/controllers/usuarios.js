@@ -1,3 +1,4 @@
+const admin = require('../../firebase-service')
 const Usuario = require("../models/Usuario")
 
 const controller = {}
@@ -5,21 +6,41 @@ const controller = {}
 controller.crearUsuario = async (req, res) => {
     try {
         const { body, datosKambai } = req
-        const { contrasenha } = body
-        const { usuarioKambai } = datosKambai
-        const { nuevo } = usuarioKambai
+        const { datosUsuario, contrasenha, rol } = body
 
-        const usuario = new Usuario()
-        usuario.setDatosUsuario({
-            correo: nuevo.correo,
-            nombreUsuario: nuevo.nombreUsuario,
-        })
-        await usuario.crearUsuario(contrasenha)
+        const datosAuth = {
+            email: datosUsuario.correo,
+            password: contrasenha,
+            displayName: datosUsuario.nombreUsuario,
+        }
+
+        const usuario = await admin.auth().createUser(datosAuth)
+
+        const datosClaims = {
+            rol: rol
+        }
+
+        const datosFirestore = {
+            uid: usuario.uid,
+            rol: rol,
+            nombreUsuario: datosUsuario.nombreUsuario,
+            correo: datosUsuario.correo,
+            cantidadClientes: 0,
+            cantidadPacientes: 0,
+        }
+
+        admin.auth().setCustomUserClaims(usuario.uid, datosClaims)
+        
+        admin.firestore().collection('Usuarios').doc(usuario.uid).set(datosFirestore)
 
         return res.status(200).json({
             codigo: 'exito',
             mensaje: 'Se creo el usuario de forma correcta.',
-            resultado: usuario.getDatosUsuario(),
+            resultado: {
+                datosAuth,
+                datosClaims,
+                datosFirestore,
+            },
         })
 
     } catch (error) {

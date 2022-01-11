@@ -28,7 +28,7 @@
                             :counter="infoInput.ci.max"
                             label="CI del cliente"
                             type="number"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.ci.$touch()"
                             @blur="$v.input.ci.$touch()"
                         ></v-text-field>
@@ -43,7 +43,7 @@
                             :error-messages="ErroresNombre"
                             :counter="infoInput.nombre.max"
                             label="Nombre del cliente"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.nombre.$touch()"
                             @blur="$v.input.nombre.$touch()"
                         ></v-text-field>
@@ -64,7 +64,7 @@
                             :error-messages="ErroresCorreo"
                             :counter="infoInput.correo.max"
                             label="Correo del cliente"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.correo.$touch()"
                             @blur="$v.input.correo.$touch()"
                         ></v-text-field>
@@ -79,7 +79,7 @@
                             v-model="input.telefono"
                             :error-messages="ErroresTelefono"
                             label="Teléfono"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.telefono.$touch()"
                             @blur="$v.input.telefono.$touch()"
                         ></v-text-field>
@@ -93,7 +93,7 @@
                             v-model="input.telefonoCelular"
                             :error-messages="ErroresTelefonoCelular"
                             label="Teléfono celular"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.telefonoCelular.$touch()"
                             @blur="$v.input.telefonoCelular.$touch()"
                         ></v-text-field>
@@ -109,7 +109,7 @@
                             :error-messages="ErroresCiudad"
                             :counter="infoInput.ciudad.max"
                             label="Ciudad"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.ciudad.$touch()"
                             @blur="$v.input.ciudad.$touch()"
                         ></v-text-field>
@@ -124,7 +124,7 @@
                             :error-messages="ErroresDireccion"
                             :counter="infoInput.direccion.max"
                             label="Dirección"
-                            :disabled="operacion === 'leer'"
+                            :readonly="operacion === 'leer'"
                             @input="$v.input.direccion.$touch()"
                             @blur="$v.input.direccion.$touch()"
                         ></v-text-field>
@@ -392,6 +392,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

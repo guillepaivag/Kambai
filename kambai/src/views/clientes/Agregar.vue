@@ -12,8 +12,12 @@ export default {
         'formulario-cliente': FormularioCliente
     },
     methods: {
-        agregarCliente(datos) {
-            console.log('Agregando cliente...', datos)
+        async agregarCliente(datosCliente) {
+            const data = await this.$store.dispatch('agregarCliente', {
+                datosCliente
+            })
+
+            this.$router.push(`/clientes/cliente/${data.uidCliente}`)
         }
     },
 }

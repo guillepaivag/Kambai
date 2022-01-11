@@ -4,7 +4,6 @@
         <div class="container mb-5">
             <v-row>
                 <v-btn
-                    disabled
                     depressed
                     color="blue"
                     class="white--text"

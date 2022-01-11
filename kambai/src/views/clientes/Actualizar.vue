@@ -34,8 +34,15 @@ export default {
         'formulario-cliente': FormularioCliente
     },
     methods: {
-        actualizarCliente(datos) {
-            console.log('Actualizando cliente...', datos)
+        async actualizarCliente(datosCliente) {
+            let data = {
+                uidCliente: this.uidCliente,
+                datosCliente
+            }
+
+            const res = await this.$store.dispatch('actualizarCliente', data)
+
+            this.$router.push(`/clientes/cliente/${res.uidCliente}`)
         }
     },
     async created() {

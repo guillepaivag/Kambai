@@ -85,7 +85,7 @@ export default {
     },
     data() {
         return {
-            MAXIMO: 1,
+            MAXIMO: 7,
             ultimoDocumento: null,
             existeMasDatos: false,
             lista: [],
