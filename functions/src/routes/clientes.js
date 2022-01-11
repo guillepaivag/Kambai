@@ -10,12 +10,18 @@ const {
 
 const { 
     estaAutenticado
- } = require('../middlewares/usuarios')
+} = require('../middlewares/usuarios')
 
 const { 
     construirDatos,
     validarExistenciaCliente
- } = require('../middlewares/clientes')
+} = require('../middlewares/clientes')
+
+const busboyMiddleware = require('../middlewares/busboy-middleware')
+
+const { obtenerListaPorExcel } = require('../middlewares/obtenerListaPorExcelClientes')
+
+const { importarDatos } = require('../controllers/clientes')
 
 router.post('/crearCliente', 
     estaAutenticado, 
@@ -35,6 +41,17 @@ router.put('/actualizarCliente/:uidCliente',
 
 router.delete('/eliminarCliente/:uidCliente', 
     estaAutenticado, 
-    controllerClientes.eliminarCliente)
+    controllerClientes.eliminarCliente
+)
+
+router.post('/importarDatos',
+    estaAutenticado, 
+    busboyMiddleware,
+    obtenerListaPorExcel,
+    validarDatosCliente, 
+    importarDatos
+)
+
+
 
 module.exports = router

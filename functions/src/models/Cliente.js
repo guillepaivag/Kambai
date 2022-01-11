@@ -111,6 +111,9 @@ class Cliente {
     async importarDatos (uidUsuario, uidCliente) {
 
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uid válida.")
+
+
+        
         if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
 
         const ref = admin.firestore().collection('Usuarios').doc(uidUsuario)

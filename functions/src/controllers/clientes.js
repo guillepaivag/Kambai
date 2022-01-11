@@ -113,4 +113,52 @@ controller.eliminarCliente = async (req, res) => {
     }
 }
 
+controller.importarDatos = async (req, res) => {
+
+
+    const { kambaiDatos, body } = req
+    const { datosClientes } = body
+    const { uidSolicitante, datosAuthSolicitante } = kambaiDatos
+
+    try {
+
+        datosClientes.forEach( async (datoCliente) => {
+
+            const cliente = new Cliente(datoCliente)
+
+            
+            
+
+
+            //agrgamos en la base de datos
+            const resultado = await cliente.agregar(uidSolicitante)
+
+            // Actualizar la cantidad
+            const ref = admin.firestore().collection('Usuarios').doc(uidSolicitante)
+            const data = (await ref.get()).data()
+
+            //aumentamos la cantidad de clientes
+            ref.update({
+                cantidadClientes: data.cantidadClientes + 1
+            })
+
+        })
+
+
+        return res.status(200).json({
+            codigo: 'Exito',
+            mensaje: `Datos clientes importados con exito.`,
+            resultado: req.body.datosClientes
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            codigo: 'ErrorServidor',
+            mensaje: 'Hubo un problema al importar los clientes.',
+            resultado: error,
+        })
+    }
+
+}
+
 module.exports = controller

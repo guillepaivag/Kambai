@@ -18,11 +18,16 @@ const {
     verPaciente,
     actualizarPaciente,
     eliminarPaciente,
+    importarDatos,
 } = require('../controllers/pacientes')
 
 const {
     estaAutenticado
 } = require('../middlewares/usuarios')
+
+const busboyMiddleware = require('../middlewares/busboy-middleware')
+
+const { obtenerListaPorExcel } = require('../middlewares/obtenerListaPorExcelPacientes')
 
 router.post('/crearPaciente', 
     estaAutenticado, 
@@ -46,5 +51,14 @@ router.put('/actualizarPaciente/:uidCliente/:uidPaciente',
 router.delete('/eliminarPaciente/:uidCliente/:uidPaciente', 
     estaAutenticado, 
     eliminarPaciente)
+
+router.post('/importarDatos',
+    
+    estaAutenticado,
+    busboyMiddleware,
+    obtenerListaPorExcel,
+    //validarDatosPaciente,
+    importarDatos
+)
 
 module.exports = router

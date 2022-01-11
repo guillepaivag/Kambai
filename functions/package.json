@@ -2,24 +2,27 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "serve": "firebase emulators:start --only functions",
     "shell": "firebase functions:shell",
     "start": "npm run shell",
     "deploy": "cd .. && firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "feProd": "cd .. && firebase emulators:start --only functions",
-    "fe": "cd .. && firebase emulators:start --only hosting,functions,firestore,auth,ui --import=./emulator-data --export-on-exit=./emulator-data"
+    "feProd": "npm run environmentProd && cd .. && firebase emulators:start --only functions",
+    "fe": "npm run environmentDev && cd .. && firebase emulators:start --only hosting,functions,firestore,auth,ui --import=./emulator-data --export-on-exit=./emulator-data",
+    "environmentProd": "firebase functions:config:set environment.mode=production && firebase functions:config:get > config.json && firebase functions:config:get",
+    "environmentDev": "firebase functions:config:set environment.mode=development && firebase functions:config:get > config.json && firebase functions:config:get"
   },
   "engines": {
     "node": "14"
   },
   "main": "index.js",
   "dependencies": {
+    "busboy": "^1.3.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-validator": "^6.12.2",
     "firebase-admin": "^9.12.0",
-    "firebase-functions": "^3.14.1"
+    "firebase-functions": "^3.14.1",
+    "read-excel-file": "^5.2.25"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"
