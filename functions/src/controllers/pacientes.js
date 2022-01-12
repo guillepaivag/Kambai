@@ -14,14 +14,6 @@ controller.crearPaciente = async (req, res) => {
         const paciente = new Paciente(datosPaciente)
         await paciente.agregar(uidSolicitante, datosPaciente.uidCliente)
 
-        // Actualizar la cantidad
-        const ref = admin.firestore().collection('Usuarios').doc(uidSolicitante)
-        const data = (await ref.get()).data()
-
-        ref.update({
-            cantidadPacientes: data.cantidadPacientes + 1
-        })
-
         return res.status(200).json({
             codigo: 'Exito',
             mensaje: `Se creo el paciente ${paciente.uid}.`,
@@ -125,14 +117,6 @@ controller.eliminarPaciente = async (req, res) => {
         const paciente = new Paciente()
         await paciente.importarDatos(uidSolicitante, uidCliente, uidPaciente)
         await paciente.borrar(uidSolicitante, uidCliente)
-
-        // Actualizar la cantidad
-        const ref = admin.firestore().collection('Usuarios').doc(uidSolicitante)
-        const data = (await ref.get()).data()
-
-        ref.update({
-            cantidadPacientes: data.cantidadPacientes - 1
-        })
 
         return res.status(200).json({
             codigo: 'Exito',

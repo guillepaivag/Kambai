@@ -191,7 +191,7 @@ export default {
         }
     },
     methods: {
-        inicializarLista () {
+        async inicializarLista () {
 
             const {
                 nombre,
@@ -203,28 +203,25 @@ export default {
 
             const veterinarioRef = fb.firestore().doc(`Usuarios/${this.$store.state.usuarios.usuario.uid}`)
 
-
-            db.collectionGroup('Pacientes')
+            const snapshot = await db.collectionGroup('Pacientes')
             .orderBy(fb.firestore.FieldPath.documentId())
             .startAt(veterinarioRef.path)
             .endAt(veterinarioRef.path + "\uf8ff")
-            .onSnapshot(snapshot => {
+            .get()
+            
+            // console.log(snapshot.docs)
 
-                //console.log(snapshot.docs)
-
-                this.pagina = 0
-                this.$store.state.pacientes.listaPacientes = []
-                this.pacientesTotalesFiltrados = []
-                snapshot.docs.forEach(doc => {
-                    this.$store.state.pacientes.listaPacientes.push( doc.data() )
-                    this.pacientesTotalesFiltrados.push( doc.data() )
-                })
-
-                this.paginar()
-                this.buscando = false
+            this.pagina = 0
+            this.$store.state.pacientes.listaPacientes = []
+            this.pacientesTotalesFiltrados = []
+            snapshot.docs.forEach(doc => {
+                this.$store.state.pacientes.listaPacientes.push( doc.data() )
+                this.pacientesTotalesFiltrados.push( doc.data() )
             })
- 
 
+            this.paginar()
+            this.buscando = false
+ 
         },
         paginar () {
 

@@ -9,28 +9,19 @@ controller.crearCliente = async (req, res) => {
     const { uidSolicitante, datosAuthSolicitante } = kambaiDatos
 
     try {
-
+        // Agrgamos en la base de datos
         const cliente = new Cliente(datosCliente)
-        
-        //agrgamos en la base de datos
         const resultado = await cliente.agregar(uidSolicitante)
-
-        // Actualizar la cantidad
-        const ref = admin.firestore().collection('Usuarios').doc(uidSolicitante)
-        const data = (await ref.get()).data()
-
-        //aumentamos la cantidad de clientes
-        ref.update({
-            cantidadClientes: data.cantidadClientes + 1
-        })
 
         return res.status(200).json({
             codigo: 'Exito',
             mensaje: 'Se creo el cliente de forma correcta.',
-            resultado: resultado,
+            resultado: resultado.getDatosCliente(),
         })
 
     } catch (error) {
+        console.log('error', error.metadata.internalRepr)
+
         return res.status(500).json({
             codigo: 'ErrorServidor',
             mensaje: 'Hubo un problema al crear el cliente.',
@@ -75,29 +66,19 @@ controller.eliminarCliente = async (req, res) => {
         const { uidSolicitante, datosAuthSolicitante } = kambaiDatos
         const { uidCliente } = params
 
-        let refUsuario = admin.firestore().collection('Usuarios').doc(uidSolicitante)
-        let ref = refUsuario.collection('Clientes').doc(uidCliente)
-
-        let cantidadPacientesEliminados = 0
+        let ref = admin.firestore()
+        .collection('Usuarios').doc(uidSolicitante)
+        .collection('Clientes').doc(uidCliente)
 
         // Eliminar todos los documentos pacientes
         const docsPacientes = await ref.collection('Pacientes').get()
 
         docsPacientes.forEach(docPaciente => {
             docPaciente.ref.delete()
-            cantidadPacientesEliminados = cantidadPacientesEliminados + 1
         })
 
         // Eliminar documento cliente
         ref.delete()
-
-        // Actualizar la cantidad
-        const data = (await refUsuario.get()).data()
-
-        refUsuario.update({
-            cantidadPacientes: data.cantidadPacientes - cantidadPacientesEliminados,
-            cantidadClientes: data.cantidadClientes - 1
-        })
 
         return res.status(200).json({
             codigo: 'Exito',
