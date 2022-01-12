@@ -3,7 +3,8 @@ const functions = require('firebase-functions')
 // FUNCTIONS
 const { incrementarCantidadCliente } = require('./src/functions/cliente')
 const { incrementarCantidadPaciente } = require('./src/functions/paciente')
-const { indexAlgoliaPacientes, indexAlgoliaClientes } = require('./src/functions/algolia')
+const { indexAlgoliaClientes } = require('./src/functions/algoliaClientes')
+const { indexAlgoliaPacientes } = require('./src/functions/algoliaPacientes')
 
 // REST-API DE KAMBAI
 const kambaiApi = require('./kambaiApi')
@@ -15,5 +16,5 @@ exports.kambaiApi = functions.region('southamerica-east1').https.onRequest(kamba
 exports.incrementarCantidadCliente = incrementarCantidadCliente
 exports.incrementarCantidadPaciente = incrementarCantidadPaciente
 
-exports.indexAlgoliaPacientes = indexAlgoliaClientes
+exports.indexAlgoliaClientes = indexAlgoliaClientes
 exports.indexAlgoliaPacientes = indexAlgoliaPacientes

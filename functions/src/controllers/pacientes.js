@@ -1,6 +1,5 @@
 const admin = require('../../firebase-service')
 const Paciente = require("../models/Paciente")
-const construirDatosPacienteNuevoPropietario = require('../utils/paciente/construirDatosPacienteNuevoPropietario')
 
 const controller = {}
 
@@ -12,7 +11,7 @@ controller.crearPaciente = async (req, res) => {
 
         // Agregar paciente
         const paciente = new Paciente(datosPaciente)
-        await paciente.agregar(uidSolicitante, datosPaciente.uidCliente)
+        await paciente.agregar(uidSolicitante)
 
         return res.status(200).json({
             codigo: 'Exito',
@@ -36,7 +35,7 @@ controller.verPaciente = async (req, res) => {
         const { uidCliente, uidPaciente } = params
 
         const paciente = new Paciente()
-        await paciente.importarDatos(uidSolicitante, uidCliente, uidPaciente)
+        await paciente.importarDatos(uidSolicitante, uidPaciente)
 
         return res.status(200).json({
             codigo: 'Exito',
@@ -62,32 +61,10 @@ controller.actualizarPaciente = async (req, res) => {
         
         // Borrar paciente
         const paciente = new Paciente()
-        await paciente.importarDatos(uidSolicitante, uidCliente, uidPaciente)
-
-        if ( datosPaciente.uidCliente !== undefined && datosPaciente.uidCliente && datosPaciente.uidCliente !== uidCliente ) {
-            // **** El paciente cambia de dueño ****
-            // Construimos los datos del paciente
-            const datosPacienteNuevo = construirDatosPacienteNuevoPropietario( datosPaciente, paciente.getDatosPaciente() )
-
-            // Eliminamos el paciente 
-            await paciente.borrar(uidSolicitante, uidCliente)
-            
-            // Agregamos el paciente
-            const pacienteNuevo = new Paciente(datosPacienteNuevo)
-            await pacienteNuevo.agregar(uidSolicitante, datosPaciente.uidCliente)
-
-            return res.status(200).json({
-                codigo: 'Exito',
-                mensaje: `¡El paciente tiene nuevo dueño!`,
-                resultado: {
-                    uidCliente: datosPaciente.uidCliente,
-                    uidPaciente: pacienteNuevo.uid,
-                },
-            })
-        }
+        await paciente.importarDatos(uidSolicitante, uidPaciente)
         
         // Actualización normal de datos del paciente
-        await paciente.actualizar(uidSolicitante, uidCliente, datosPaciente)
+        await paciente.actualizar(uidSolicitante, datosPaciente)
 
         return res.status(200).json({
             codigo: 'Exito',
@@ -115,8 +92,8 @@ controller.eliminarPaciente = async (req, res) => {
         
         // Borrar paciente
         const paciente = new Paciente()
-        await paciente.importarDatos(uidSolicitante, uidCliente, uidPaciente)
-        await paciente.borrar(uidSolicitante, uidCliente)
+        await paciente.importarDatos(uidSolicitante, uidPaciente)
+        await paciente.borrar(uidSolicitante)
 
         return res.status(200).json({
             codigo: 'Exito',

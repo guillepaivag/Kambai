@@ -1,11 +1,14 @@
 const functions = require('firebase-functions')
 const admin = require('../../firebase-service')
 
-const documentPath = 'Usuarios/{uidUsuario}/Clientes/{uidCliente}'
 const cf = {}
 
 cf.incrementarCantidadCliente = 
-functions.region('southamerica-east1').firestore.document(documentPath).onWrite(async ( change, context ) => {
+functions
+.region('southamerica-east1')
+.firestore
+.document('Usuarios/{uidUsuario}/Clientes/{uidCliente}')
+.onWrite(async ( change, context ) => {
     const document = change.after.exists ? change.after.data() : null
 
     const { uidUsuario, uidCliente } = context.params
@@ -21,7 +24,7 @@ functions.region('southamerica-east1').firestore.document(documentPath).onWrite(
         })
     }
 
-    return await contadorDeCliente(uidUsuario, !!document)
+    await contadorDeCliente(uidUsuario, !!document)
 })
 
 module.exports = cf

@@ -1,12 +1,14 @@
 const functions = require('firebase-functions')
 const admin = require('../../firebase-service')
 
-const documentPath = 'Usuarios/{uidUsuario}/Clientes/{uidCliente}/Pacientes/{uidPaciente}'
-
 const cf = {}
 
 cf.incrementarCantidadPaciente = 
-functions.region('southamerica-east1').firestore.document(documentPath).onWrite(async ( change, context ) => {
+functions
+.region('southamerica-east1')
+.firestore
+.document('Usuarios/{uidUsuario}/Pacientes/{uidPaciente}')
+.onWrite(async ( change, context ) => {
     
     const document = change.after.exists ? change.after.data() : null
 

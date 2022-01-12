@@ -11,16 +11,18 @@ controller.crearCliente = async (req, res) => {
     try {
         // Agrgamos en la base de datos
         const cliente = new Cliente(datosCliente)
-        const resultado = await cliente.agregar(uidSolicitante)
+        await cliente.agregar(uidSolicitante)
 
         return res.status(200).json({
             codigo: 'Exito',
             mensaje: 'Se creo el cliente de forma correcta.',
-            resultado: resultado.getDatosCliente(),
+            resultado: cliente.getDatosCliente(),
         })
 
     } catch (error) {
-        console.log('error', error.metadata.internalRepr)
+        console.log('error', error)
+        console.log('error.metadata', error.metadata)
+        console.log('error.metadata.internalRepr', error.metadata.internalRepr)
 
         return res.status(500).json({
             codigo: 'ErrorServidor',

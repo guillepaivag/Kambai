@@ -165,13 +165,13 @@ class Paciente {
      * @param {string} uidPaciente uid del paciente a importar
      * @returns el objeto Paciente resultante
      */
-    async importarDatos (uidUsuario, uidCliente, uidPaciente) {
+    async importarDatos (uidUsuario, uidPaciente) {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
-        if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
         if(!uidPaciente || typeof uidPaciente != 'string') throw new Error("Necesita una uidPaciente válida.")
 
-        const ref = admin.firestore().collection('Usuarios').doc(uidUsuario)
-        .collection('Clientes').doc(uidCliente).collection('Pacientes').doc(uidPaciente)
+        const ref = admin.firestore()
+        .collection('Usuarios').doc(uidUsuario)
+        .collection('Pacientes').doc(uidPaciente)
         
         const docPaciente = await ref.get()
 
@@ -188,13 +188,11 @@ class Paciente {
      * @param {string} uidUsuario la uid del usuario
      * @returns el objeto Paciente actual
      */
-    async agregar (uidUsuario, uidCliente) {
+    async agregar (uidUsuario) {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
-        if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
 
         await admin.firestore()
         .collection('Usuarios').doc(uidUsuario)
-        .collection('Clientes').doc(uidCliente)
         .collection('Pacientes').doc(this.uid)
         .set(this.getDatosPaciente())
 
@@ -208,23 +206,25 @@ class Paciente {
      * @param {*} uidCliente 
      * @returns 
      */
-    async borrar (uidUsuario, uidCliente) {
+    async borrar (uidUsuario) {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
-        if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
 
-        await admin.firestore().collection('Usuarios').doc(uidUsuario).collection('Clientes').doc(uidCliente)
-                    .collection('Pacientes').doc(this.uid).delete()
+        await admin.firestore()
+        .collection('Usuarios').doc(uidUsuario)
+        .collection('Pacientes').doc(this.uid)
+        .delete()
 
         return this
     }
 
-    async actualizar (uidUsuario, uidCliente, datosPaciente) {
+    async actualizar (uidUsuario, datosPaciente) {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
-        if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
 
         // asumimos que ya los datos son los que se quiere actualizar
-        const res = await admin.firestore().collection('Usuarios').doc(uidUsuario).collection('Clientes').doc(uidCliente)
-                    .collection('Pacientes').doc(this.uid).update(datosPaciente)
+        const res = await admin.firestore()
+        .collection('Usuarios').doc(uidUsuario)
+        .collection('Pacientes').doc(this.uid)
+        .update(datosPaciente)
 
         return this
     }
