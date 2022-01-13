@@ -156,9 +156,7 @@ class Cliente {
         const cliente = new Cliente()
         const existe = await cliente.importarDatos(uidUsuario, uidCliente)
 
-        if (!existe) {
-            return null
-        }
+        if (!existe) return null
 
         const datos = cliente.getDatosCliente()
 

@@ -943,12 +943,11 @@ export default {
         }
 
         this.isLoading = true
+        
+        // Clientes
         this.clientes = []
-
         const snapshot = await db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid)
         .collection('Clientes').get()
-
-        const snapshotEspecies = await db.collection('Especies').get()
 
         snapshot.docs.forEach(doc => {
             this.clientes.push(doc.data())                                          // Arreglo de datos de todos los clientes de un veterinario
@@ -956,6 +955,8 @@ export default {
             this.clientesTextTemp.push(`${doc.data().ci} - ${doc.data().nombre}`)   // Solo para operacion de busqueda
         })
 
+        // Especies
+        const snapshotEspecies = await db.collection('Especies').get()
         this.especies.push({
             text: 'Elegir una especie',
             value: ''
@@ -991,8 +992,8 @@ export default {
 
             const cliente = this.clientes.find(cliente => cliente.uid === this.identificadorCliente)
 
-            this.busquedorCliente = `${cliente.ci} - ${cliente.nombre}`
             this.clienteSeleccionado = `${cliente.ci} - ${cliente.nombre}`
+            this.busquedorCliente = `${cliente.ci} - ${cliente.nombre}`
         }
     },
 }

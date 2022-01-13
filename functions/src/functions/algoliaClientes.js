@@ -13,8 +13,7 @@ functions
 .firestore
 .document('Usuarios/{uidUsuario}/Clientes/{uidCliente}')
 .onWrite(async ( change, context ) => {
-    try {
-        // "document" will be empty if it's deleted, otherwise, this contains
+    // "document" will be empty if it's deleted, otherwise, this contains
     // the updated values.
     const document = change.after.exists ? change.after.data() : null
     const oldDocument = change.before.exists ? change.before.data() : null
@@ -60,9 +59,6 @@ functions
     if (!document) return await deleteObjectCliente()
     
     return await saveObjectCliente()
-    } catch (error) {
-        console.log('xd ehheheheheh', error)
-    }
 })
 
 module.exports = cf

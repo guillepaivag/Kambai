@@ -32,7 +32,7 @@ controller.verPaciente = async (req, res) => {
     try {
         const { kambaiDatos, params } = req
         const { uidSolicitante, datosAuthSolicitante } = kambaiDatos
-        const { uidCliente, uidPaciente } = params
+        const { uidPaciente } = params
 
         const paciente = new Paciente()
         await paciente.importarDatos(uidSolicitante, uidPaciente)
@@ -56,7 +56,7 @@ controller.actualizarPaciente = async (req, res) => {
     try {
         const { kambaiDatos, params, body } = req
         const { uidSolicitante, datosAuthSolicitante } = kambaiDatos
-        const { uidCliente, uidPaciente } = params
+        const { uidPaciente } = params
         const { datosPaciente } = body
         
         // Borrar paciente
@@ -69,10 +69,7 @@ controller.actualizarPaciente = async (req, res) => {
         return res.status(200).json({
             codigo: 'Exito',
             mensaje: `Se actualizó el paciente de forma correcta.`,
-            resultado: {
-                uidCliente: uidCliente,
-                uidPaciente: uidPaciente,
-            },
+            resultado: uidPaciente,
         })
 
     } catch (error) {
@@ -88,7 +85,7 @@ controller.eliminarPaciente = async (req, res) => {
     try {
         const { kambaiDatos, params } = req
         const { uidSolicitante, datosAuthSolicitante } = kambaiDatos
-        const { uidCliente, uidPaciente } = params
+        const { uidPaciente } = params
         
         // Borrar paciente
         const paciente = new Paciente()

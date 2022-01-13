@@ -1,8 +1,8 @@
 const functions = require('firebase-functions')
 
 // FUNCTIONS
-const { incrementarCantidadCliente } = require('./src/functions/cliente')
-const { incrementarCantidadPaciente } = require('./src/functions/paciente')
+const { incrementarCantidadCliente, decrementarCantidadCliente } = require('./src/functions/cliente')
+const { incrementarCantidadPaciente, decrementarCantidadPaciente } = require('./src/functions/paciente')
 const { indexAlgoliaClientes } = require('./src/functions/algoliaClientes')
 const { indexAlgoliaPacientes } = require('./src/functions/algoliaPacientes')
 
@@ -15,6 +15,8 @@ exports.kambaiApi = functions.region('southamerica-east1').https.onRequest(kamba
 // Funciones de Cloud Functions
 exports.incrementarCantidadCliente = incrementarCantidadCliente
 exports.incrementarCantidadPaciente = incrementarCantidadPaciente
+exports.decrementarCantidadCliente = decrementarCantidadCliente
+exports.decrementarCantidadPaciente = decrementarCantidadPaciente
 
 exports.indexAlgoliaClientes = indexAlgoliaClientes
 exports.indexAlgoliaPacientes = indexAlgoliaPacientes

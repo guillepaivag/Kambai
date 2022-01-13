@@ -37,18 +37,18 @@ router.post('/crearPaciente',
     costruirDatos, 
     crearPaciente)
 
-router.get('/leerPaciente/:uidCliente/:uidPaciente', 
+router.get('/leerPaciente/:uidPaciente', 
     estaAutenticado, 
     verPaciente)
 
-router.put('/actualizarPaciente/:uidCliente/:uidPaciente', 
+router.put('/actualizarPaciente/:uidPaciente', 
     estaAutenticado, 
     validarDatosPaciente, 
     validarDatos, 
     costruirDatos, 
     actualizarPaciente)
 
-router.delete('/eliminarPaciente/:uidCliente/:uidPaciente', 
+router.delete('/eliminarPaciente/:uidPaciente', 
     estaAutenticado, 
     eliminarPaciente)
 

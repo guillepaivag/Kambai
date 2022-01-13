@@ -4,7 +4,7 @@
   "scripts": {
     "shell": "firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "cd .. && firebase deploy --only functions",
+    "deploy": "npm run environmentProd && cd .. && firebase deploy --only functions",
     "logs": "firebase functions:log",
     "feProd": "npm run environmentProd && cd .. && firebase emulators:start --only functions",
     "fe": "npm run environmentDev && cd .. && firebase emulators:start --only hosting,functions,firestore,auth,ui --import=./emulator-data --export-on-exit=./emulator-data",

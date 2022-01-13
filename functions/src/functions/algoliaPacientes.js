@@ -13,9 +13,6 @@ functions
 .firestore
 .document('Usuarios/{uidUsuario}/Pacientes/{uidPaciente}')
 .onWrite(async ( change, context ) => {
-    // 'Especies/{uidUsuario}'
-    // 'Usuarios/{uidUsuario}/Clientes/{uidCliente}/Pacientes/${uidPaciente}'
-
     // "document" will be empty if it's deleted, otherwise, this contains
     // the updated values.
     const document = change.after.exists ? change.after.data() : null

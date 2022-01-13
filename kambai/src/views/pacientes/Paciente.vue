@@ -6,7 +6,7 @@
                     depressed
                     color="blue"
                     class="white--text"
-                    :to="`/pacientes/actualizar/${uid}/cliente/${uidCliente}`"
+                    :to="`/pacientes/actualizar/${uid}`"
                 >
                     Actualizar
                 </v-btn>

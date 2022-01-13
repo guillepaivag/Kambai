@@ -20,10 +20,6 @@ controller.crearCliente = async (req, res) => {
         })
 
     } catch (error) {
-        console.log('error', error)
-        console.log('error.metadata', error.metadata)
-        console.log('error.metadata.internalRepr', error.metadata.internalRepr)
-
         return res.status(500).json({
             codigo: 'ErrorServidor',
             mensaje: 'Hubo un problema al crear el cliente.',

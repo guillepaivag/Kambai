@@ -100,7 +100,7 @@ export default {
             this.buscando = true
 
             let ref = db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid)
-            .collection('Clientes').doc(this.uidCliente).collection('Pacientes')
+            .collection('Pacientes').where('uidCliente', '==', this.uidCliente)
             ref = ref.limit( this.MAXIMO )
             const documentSnapshots = await ref.get()
             this.ultimoDocumento = documentSnapshots.docs[documentSnapshots.docs.length-1]
@@ -119,7 +119,7 @@ export default {
             this.buscando = true
             
             let ref = db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid)
-            .collection('Clientes').doc(this.uidCliente).collection('Pacientes')
+            .collection('Pacientes').where('uidCliente', '==', this.uidCliente)
             .startAfter(this.ultimoDocumento)
             ref = ref.limit(this.MAXIMO)
             const documentSnapshots = await ref.get()
@@ -134,7 +134,7 @@ export default {
         },
         async verificarSiHayMasDatos () {
             let ref = db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid)
-            .collection('Clientes').doc(this.uidCliente).collection('Pacientes')
+            .collection('Pacientes').where('uidCliente', '==', this.uidCliente)
             .startAfter(this.ultimoDocumento)
             ref = ref.limit(1)
             const siguienteDato = await ref.get()
