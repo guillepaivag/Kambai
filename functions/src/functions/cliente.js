@@ -3,30 +3,30 @@ const admin = require('../../firebase-service')
 
 const cf = {}
 
-cf.incrementarCantidadPaciente = 
+cf.incrementarCantidadCliente = 
 functions
 .region('southamerica-east1')
 .firestore
-.document('Usuarios/{uidUsuario}/Pacientes/{uidPaciente}')
+.document('Usuarios/{uidUsuario}/Clientes/{uidCliente}')
 .onCreate(async ( change, context ) => {
     const { uidUsuario } = context.params
     const increment = admin.firestore.FieldValue.increment(1)
 
     const ref = admin.firestore().collection('Usuarios').doc(uidUsuario)
-    return await ref.update({ cantidadPacientes: increment })    
+    return await ref.update({ cantidadClientes: increment })
 })
 
-cf.decrementarCantidadPaciente = 
+cf.decrementarCantidadCliente = 
 functions
 .region('southamerica-east1')
 .firestore
-.document('Usuarios/{uidUsuario}/Pacientes/{uidPaciente}')
+.document('Usuarios/{uidUsuario}/Clientes/{uidCliente}')
 .onDelete(async ( change, context ) => {
-    const { uidUsuario } = context.params
+    const { uidUsuario, uidCliente } = context.params
     const decrement = admin.firestore.FieldValue.increment(-1)
 
     const ref = admin.firestore().collection('Usuarios').doc(uidUsuario)
-    return await ref.update({ cantidadPacientes: decrement })
+    return await ref.update({ cantidadClientes: decrement })
 })
 
 module.exports = cf

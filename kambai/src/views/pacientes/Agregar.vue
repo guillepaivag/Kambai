@@ -1,6 +1,10 @@
 <template>
     <div class="">
-        <formulario-paciente operacion="agregar" :identificadorCliente="uidCliente" @datosNuevos="agregarPaciente($event)" />
+        <formulario-paciente 
+            operacion="agregar" 
+            :identificadorCliente="uidCliente" 
+            @datosNuevos="agregarPaciente($event)" 
+        />
     </div>
 </template>
 
@@ -23,7 +27,7 @@ export default {
                 datosPaciente
             })
 
-            this.$router.push(`/pacientes/paciente/${data.uidPaciente}/cliente/${data.uidCliente}`)
+            this.$router.push(`/pacientes/paciente/${data.uidPaciente}`)
         }
     },
 }

@@ -2,7 +2,7 @@ const admin = require('../../firebase-service')
 
 class Paciente {
     constructor (datosPaciente) {
-        this.uid = datosPaciente && datosPaciente.uid ? datosPaciente.uid : ''
+        this.uid = datosPaciente && datosPaciente.uid ? datosPaciente.uid : admin.firestore().collection('Paciente').doc().id
         this.nombrePaciente = datosPaciente && datosPaciente.nombrePaciente ? datosPaciente.nombrePaciente : ''
         this.uidCliente = datosPaciente && datosPaciente.uidCliente ? datosPaciente.uidCliente : ''
         this.fechaNacimiento = datosPaciente && datosPaciente.fechaNacimiento ? datosPaciente.fechaNacimiento : null
@@ -72,163 +72,83 @@ class Paciente {
         this.setPATOLOGIAS(datosPaciente && datosPaciente.patologias ? datosPaciente.patologias : null)
     }
 
-    setUID (uid) {
-        if (!uid) {
-            this.uid = ''
-            return
-        }
+    setUID (uid = admin.firestore().collection('Paciente').doc().id) {
         this.uid = uid
     }
 
-    setNOMBREPACIENTE(nombrePaciente){
-        if (!nombrePaciente) {
-            this.nombrePaciente = ''
-            return
-        }
+    setNOMBREPACIENTE(nombrePaciente = '') {
         this.nombrePaciente = nombrePaciente
     }
 
-    setUIDCLIENTE (uidCliente) {
-        if (!uidCliente) {
-            this.uidCliente = ''
-            return
-        }
+    setUIDCLIENTE (uidCliente = '') {
         this.uidCliente = uidCliente
     }    
 
-    setFECHANACIMIENTO (fechaNacimiento) {
-        if (!fechaNacimiento) {
-            this.fechaNacimiento = null
-            return
-        }
+    setFECHANACIMIENTO (fechaNacimiento = null) {
         this.fechaNacimiento = fechaNacimiento
     } 
 
-    setESPECIE (especie) {
-        if (!especie) {
-            this.especie = ''
-            return
-        }
+    setESPECIE (especie = '') {
         this.especie = especie
     }
 
-    setRAZA (raza) {
-        if (!raza) {
-            this.raza = ''
-            return
-        }
+    setRAZA (raza = '') {
         this.raza = raza
     }
 
-    setSEXO (sexo) {
-        if (!sexo) {
-            this.sexo = false
-            return
-        }
+    setSEXO (sexo = false) {
         this.sexo = sexo
     }
 
-    setPELAJE (pelaje) {
-        if (!pelaje) {
-            this.pelaje = ''
-            return
-        }
+    setPELAJE (pelaje = '') {
         this.pelaje = pelaje
     }
 
-    setPESO (peso) {
-        if (!peso) {
-            this.peso = 0
-            return
-        }
+    setPESO (peso = 0) {
         this.peso = peso
     }
 
-    setCOMIDA (comida) {
-        if (!comida) {
-            this.comida = ''
-            return
-        }
+    setCOMIDA (comida = '') {
         this.comida = comida
     }
 
-    setVIVIENDAINFO (viviendaInfo) {
-        if (!viviendaInfo) {
-            this.viviendaInfo = ''
-            return
-        }
+    setVIVIENDAINFO (viviendaInfo = '') {
         this.viviendaInfo = viviendaInfo
     }
 
-    setULTIMOCELO (ultimoCelo) {
-        if (!ultimoCelo) {
-            this.ultimoCelo = null
-            return
-        }
+    setULTIMOCELO (ultimoCelo = null) {
         this.ultimoCelo = ultimoCelo
     }
 
-    setCHIP (chip) {
-        if (!chip) {
-            this.chip = ''
-            return
-        }
+    setCHIP (chip = '') {
         this.chip = chip
     }
 
-    setPEDIGREE (pedigree) {
-        if (!pedigree) {
-            this.pedigree = false
-            return
-        }
+    setPEDIGREE (pedigree = false) {
         this.pedigree = pedigree
     }
 
-    setFALLECIO (fallecio) {
-        if (!fallecio) {
-            this.fallecio = false
-            return
-        }
+    setFALLECIO (fallecio = false) {
         this.fallecio = fallecio
     }
 
-    setREPRODUCTOR (reproductor) {
-        if (!reproductor) {
-            this.reproductor = false
-            return
-        }
+    setREPRODUCTOR (reproductor = false) {
         this.reproductor = reproductor
     }
 
-    setCASTRADO (castrado) {
-        if (!castrado) {
-            this.castrado = false
-            return
-        }
+    setCASTRADO (castrado = false) {
         this.castrado = castrado
     }
 
-    setESTAENADOPCION (estaEnAdopcion) {
-        if (!estaEnAdopcion) {
-            this.estaEnAdopcion = false
-            return
-        }
+    setESTAENADOPCION (estaEnAdopcion = false) {
         this.estaEnAdopcion = estaEnAdopcion
     }
 
-    setAGRESIVIDAD (agresividad) {
-        if (!agresividad) {
-            this.agresividad = 0
-            return
-        }
+    setAGRESIVIDAD (agresividad = 0) {
         this.agresividad = agresividad
     }
 
-    setPATOLOGIAS (patologias) {
-        if (!patologias) {
-            this.patologias = ''
-            return
-        }
+    setPATOLOGIAS (patologias = '') {
         this.patologias = patologias
     }
 
@@ -245,13 +165,13 @@ class Paciente {
      * @param {string} uidPaciente uid del paciente a importar
      * @returns el objeto Paciente resultante
      */
-     async importarDatos (uidUsuario, uidCliente, uidPaciente) {
+    async importarDatos (uidUsuario, uidPaciente) {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
-        if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
         if(!uidPaciente || typeof uidPaciente != 'string') throw new Error("Necesita una uidPaciente válida.")
 
-        const ref = admin.firestore().collection('Usuarios').doc(uidUsuario)
-        .collection('Clientes').doc(uidCliente).collection('Pacientes').doc(uidPaciente)
+        const ref = admin.firestore()
+        .collection('Usuarios').doc(uidUsuario)
+        .collection('Pacientes').doc(uidPaciente)
         
         const docPaciente = await ref.get()
 
@@ -261,26 +181,24 @@ class Paciente {
 
         return this
     }
+
+
     /**
      * metodo para agregar los datos del objeto paciente a un nuevo paciente en la db
      * @param {string} uidUsuario la uid del usuario
      * @returns el objeto Paciente actual
      */
-    async agregar (uidUsuario, uidCliente) {
+    async agregar (uidUsuario) {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
-        if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
-        
-        const documento = await admin.firestore().collection(`Usuarios/${uidUsuario}/Clientes/${uidCliente}/Pacientes`)
-                        .add(this.getDatosPaciente())
 
-        documento.update({
-            uid: documento.id
-        })
-        
-        this.setUID(documento.id)
+        await admin.firestore()
+        .collection('Usuarios').doc(uidUsuario)
+        .collection('Pacientes').doc(this.uid)
+        .set(this.getDatosPaciente())
 
         return this
     }
+    
 
     /**
      * 
@@ -288,23 +206,25 @@ class Paciente {
      * @param {*} uidCliente 
      * @returns 
      */
-    async borrar (uidUsuario, uidCliente) {
+    async borrar (uidUsuario) {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
-        if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
 
-        await admin.firestore().collection('Usuarios').doc(uidUsuario).collection('Clientes').doc(uidCliente)
-                    .collection('Pacientes').doc(this.uid).delete()
+        await admin.firestore()
+        .collection('Usuarios').doc(uidUsuario)
+        .collection('Pacientes').doc(this.uid)
+        .delete()
 
         return this
     }
 
-    async actualizar (uidUsuario, uidCliente, datosPaciente) {
+    async actualizar (uidUsuario, datosPaciente) {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
-        if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
 
         // asumimos que ya los datos son los que se quiere actualizar
-        const res = await admin.firestore().collection('Usuarios').doc(uidUsuario).collection('Clientes').doc(uidCliente)
-                    .collection('Pacientes').doc(this.uid).update(datosPaciente)
+        const res = await admin.firestore()
+        .collection('Usuarios').doc(uidUsuario)
+        .collection('Pacientes').doc(this.uid)
+        .update(datosPaciente)
 
         return this
     }

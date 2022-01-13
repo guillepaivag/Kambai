@@ -54,12 +54,9 @@ export default {
                     }
                 }
     
-                const res = await axios.put(`/pacientes/actualizarPaciente/${data.uidCliente}/${data.uidPaciente}`, body, config)
+                const res = await axios.put(`/pacientes/actualizarPaciente/${data.uidPaciente}`, body, config)
 
-                return {
-                    uidPaciente: res.data.resultado.uidPaciente,
-                    uidCliente: res.data.resultado.uidCliente,
-                }
+                return res.data.resultado
 
             } catch (error) {
                 console.log('error', error)
@@ -78,7 +75,7 @@ export default {
                     }
                 }
     
-                await axios.delete(`/pacientes/eliminarPaciente/${data.uidCliente}/${data.uidPaciente}`, config)
+                await axios.delete(`/pacientes/eliminarPaciente/${data.uidPaciente}`, config)
             } catch (error) {
                 console.log('error', error)
             }

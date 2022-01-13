@@ -43,14 +43,13 @@ export default {
                 datosPaciente: data
             }
 
-            const res = await this.$store.dispatch('actualizarPaciente', data2)
+            const uidPaciente = await this.$store.dispatch('actualizarPaciente', data2)
 
-            this.$router.push(`/pacientes/paciente/${res.uidPaciente}/cliente/${res.uidCliente}`)
+            this.$router.push(`/pacientes/paciente/${uidPaciente}`)
         }
     },
     async created() {
         const ref = db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid)
-        .collection('Clientes').doc(this.uidCliente)
         .collection('Pacientes').doc(this.uid)
 
         const doc = await ref.get()

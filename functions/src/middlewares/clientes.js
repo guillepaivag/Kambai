@@ -12,9 +12,7 @@ middlewareCliente.validarExistenciaCliente = async (req, res, next) => {
         
         const cliente = await Cliente.obtenerDatosPorUID(uidSolicitante, params.uidCliente)
 
-        if(!cliente){
-            throw new Error('El cliente a actualizar debe existir')
-        }
+        if(!cliente) throw new Error('El cliente a actualizar debe existir')
 
         return next()
 
@@ -37,11 +35,11 @@ middlewareCliente.construirDatos = async (req, res, next) => {
 
         const esOperacionAgregar = req.method === 'POST'
     
-        //Asignamos a la uid del parametro
-        if(!esOperacionAgregar){
+        // Asignamos a la uid del parametro
+        if (!esOperacionAgregar) {
             datosClienteConstruido.uid = params.uidCliente
-        }else{
-            datosClienteConstruido.ci = ""
+        } else {
+            datosClienteConstruido.uid = ""
         }
     
         !!datosCliente.ci ? datosClienteConstruido.ci = parseInt(datosCliente.ci) : ""

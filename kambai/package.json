@@ -22,15 +22,15 @@
     "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
-    "@mdi/font": "^6.2.95",
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-pwa": "~4.5.0",
-    "@vue/cli-plugin-router": "~4.5.0",
-    "@vue/cli-plugin-vuex": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "sass": "^1.32.13",
+    "@mdi/font": "^6.5.95",
+    "@vue/cli-plugin-babel": "^4.5.15",
+    "@vue/cli-plugin-pwa": "^4.5.15",
+    "@vue/cli-plugin-router": "^4.5.15",
+    "@vue/cli-plugin-vuex": "^4.5.15",
+    "@vue/cli-service": "^4.5.15",
+    "sass": "^1.48.0",
     "sass-loader": "^10.2.0",
-    "vue-cli-plugin-vuetify": "^2.4.3",
+    "vue-cli-plugin-vuetify": "^2.4.5",
     "vue-template-compiler": "^2.6.14",
     "vuetify-loader": "^1.7.3"
   },

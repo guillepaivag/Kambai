@@ -118,7 +118,7 @@
                         <td>{{ item.sexo ? 'Macho' : 'Hembra' }}</td>
                         <td>
                             <v-btn
-                                :to="`/pacientes/paciente/${item.uid}/cliente/${item.uidCliente}`"
+                                :to="`/pacientes/paciente/${item.uid}`"
                                 small
                                 rounded
                                 color="blue"
@@ -168,7 +168,7 @@ export default {
                 nombre: '',
                 raza: '',
                 especie: '',
-                sexo: '',
+                sexo: undefined,
             },
             sexoSelect: { text: 'Sexo', value: undefined },
             sexos: [
@@ -191,7 +191,7 @@ export default {
         }
     },
     methods: {
-        inicializarLista () {
+        async inicializarLista () {
 
             const {
                 nombre,
@@ -201,30 +201,25 @@ export default {
 
             this.buscando = true
 
-            const veterinarioRef = fb.firestore().doc(`Usuarios/${this.$store.state.usuarios.usuario.uid}`)
+            const ref = fb.firestore()
+            .collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid)
+            .collection('Pacientes')
 
+            const snapshot = await ref.get()
+            
+            // console.log(snapshot.docs)
 
-            db.collectionGroup('Pacientes')
-            .orderBy(fb.firestore.FieldPath.documentId())
-            .startAt(veterinarioRef.path)
-            .endAt(veterinarioRef.path + "\uf8ff")
-            .onSnapshot(snapshot => {
-
-                //console.log(snapshot.docs)
-
-                this.pagina = 0
-                this.$store.state.pacientes.listaPacientes = []
-                this.pacientesTotalesFiltrados = []
-                snapshot.docs.forEach(doc => {
-                    this.$store.state.pacientes.listaPacientes.push( doc.data() )
-                    this.pacientesTotalesFiltrados.push( doc.data() )
-                })
-
-                this.paginar()
-                this.buscando = false
+            this.pagina = 0
+            this.$store.state.pacientes.listaPacientes = []
+            this.pacientesTotalesFiltrados = []
+            snapshot.docs.forEach(doc => {
+                this.$store.state.pacientes.listaPacientes.push( doc.data() )
+                this.pacientesTotalesFiltrados.push( doc.data() )
             })
- 
 
+            this.paginar()
+            this.buscando = false
+ 
         },
         paginar () {
 
@@ -255,9 +250,7 @@ export default {
                 sexo
             } = this.input
 
-            if ( !nombre && !raza && !especie && sexo === undefined) {
-                return
-            }
+            if ( !nombre && !raza && !especie && sexo === undefined) return
             
             let arrNombre, arrRaza, arrEspecie, arrSexo
             this.pacientesTotalesFiltrados = []

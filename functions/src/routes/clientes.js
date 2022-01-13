@@ -48,7 +48,7 @@ router.post('/importarDatos',
     estaAutenticado, 
     busboyMiddleware,
     obtenerListaPorExcel,
-    validarDatosCliente, 
+    // validarDatosCliente, 
     importarDatos
 )
 

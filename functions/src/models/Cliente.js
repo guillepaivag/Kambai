@@ -2,7 +2,7 @@ const admin = require('../../firebase-service')
 
 class Cliente {
     constructor (datosCliente) {
-        this.uid = datosCliente && datosCliente.uid ? datosCliente.uid : ''
+        this.uid = datosCliente && datosCliente.uid ? datosCliente.uid : admin.firestore().collection('Cliente').doc().id
         this.ci = datosCliente && datosCliente.ci ? datosCliente.ci : 0
         this.nombre = datosCliente && datosCliente.nombre ? datosCliente.nombre : ''
         this.correo = datosCliente && datosCliente.correo ? datosCliente.correo : ''
@@ -22,7 +22,6 @@ class Cliente {
             telefonoCelular: this.telefonoCelular,
             direccion: this.direccion,
             ciudad: this.ciudad,
-            
         }
     }
 
@@ -38,67 +37,35 @@ class Cliente {
         return this
     }
 
-    setUID (uid) {
-        if (!uid) {
-            this.uid = ''
-            return
-        }
+    setUID (uid = admin.firestore().collection('Cliente').doc().id) {
         this.uid = uid
     }
 
-    setCI (ci) {
-        if (!ci) {
-            this.ci = 0
-            return
-        }
+    setCI (ci = 0) {
         this.ci = ci
     }
 
-    setNOMBRE (nombre) {
-        if (!nombre) {
-            this.nombre = ''
-            return
-        }
+    setNOMBRE (nombre = '') {
         this.nombre = nombre
     }
 
-    setCORREO (correo) {
-        if (!correo) {
-            this.correo = ''
-            return
-        }
+    setCORREO (correo = '') {
         this.correo = correo
     }
 
-    setTELEFONO (telefono) {
-        if (!telefono) {
-            this.telefono = ''
-            return
-        }
+    setTELEFONO (telefono = '') {
         this.telefono = telefono
     }
 
-    setTELEFONOCELULAR (telefonoCelular) {
-        if (!telefonoCelular) {
-            this.telefonoCelular = ''
-            return
-        }
+    setTELEFONOCELULAR (telefonoCelular = '') {
         this.telefonoCelular = telefonoCelular
     }
 
-    setDIRECCION (direccion) {
-        if (!direccion) {
-            this.direccion = ''
-            return
-        }
+    setDIRECCION (direccion = '') {
         this.direccion = direccion
     }
 
-    setCIUDAD (ciudad) {
-        if (!ciudad) {
-            this.ciudad = ''
-            return
-        }
+    setCIUDAD (ciudad = '') {
         this.ciudad = ciudad
     }
 
@@ -111,9 +78,6 @@ class Cliente {
     async importarDatos (uidUsuario, uidCliente) {
 
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uid válida.")
-
-
-        
         if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
 
         const ref = admin.firestore().collection('Usuarios').doc(uidUsuario)
@@ -121,9 +85,7 @@ class Cliente {
         
         const docCliente = await ref.get()
 
-        if (!docCliente.exists) {
-            return null
-        }
+        if (!docCliente.exists) return null
 
         const data = docCliente.data()
 
@@ -137,22 +99,19 @@ class Cliente {
      * @param {string} uidUsuario la uid del usuario
      * @returns el objeto Cliente actual
      */
-    async agregar (uidUsuario) {
-        
+    async agregar (uidUsuario) { 
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uid válida.")
 
-        const documento = await admin.firestore().collection(`Usuarios/${uidUsuario}/Clientes`).add(this.getDatosCliente())
-        
-        // Actualizar la uid
-        const ref = admin.firestore().collection(`Usuarios/${uidUsuario}/Clientes`).doc(documento.id)
-        const data = (await ref.get()).data()
+        console.log('this.getDatosCliente()', this.getDatosCliente())
 
-        //aumentamos la cantidad de clientes
-        ref.update({
-            uid: documento.id
-        })
-
-        this.setUID(documento.id)
+        try {
+            admin.firestore()
+            .collection('Usuarios').doc(uidUsuario)
+            .collection('Clientes').doc(this.uid)
+            .set(this.getDatosCliente())
+        } catch (error) {
+            console.log('aaaaaaaaaaaaaa: ', error)
+        }
         
         return this
     }
@@ -162,7 +121,7 @@ class Cliente {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
 
         // asumimos que ya los datos son los que se quiere actualizar
-        const res = await admin.firestore().collection('Usuarios').doc(uidUsuario)
+        await admin.firestore().collection('Usuarios').doc(uidUsuario)
                     .collection('Clientes').doc(this.uid).update(datosCliente);
 
         return this
@@ -174,7 +133,7 @@ class Cliente {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
         if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
 
-        const res = await admin.firestore().collection('Usuarios').doc(uidUsuario)
+        await admin.firestore().collection('Usuarios').doc(uidUsuario)
         .collection('Clientes').doc(uidCliente).delete()
 
         return this
@@ -197,9 +156,7 @@ class Cliente {
         const cliente = new Cliente()
         const existe = await cliente.importarDatos(uidUsuario, uidCliente)
 
-        if (!existe) {
-            return null
-        }
+        if (!existe) return null
 
         const datos = cliente.getDatosCliente()
 
@@ -223,10 +180,6 @@ class Cliente {
         const datos = cliente.getDatosCliente()
         return datos
     }
-
-    
-
-
 }
 
 module.exports = Cliente

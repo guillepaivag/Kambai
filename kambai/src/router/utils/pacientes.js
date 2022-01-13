@@ -37,7 +37,7 @@ rutas.push({
 
 // Ver paciente
 rutas.push({
-    path: '/pacientes/paciente/:uid/cliente/:uidCliente',
+    path: '/pacientes/paciente/:uid',
     name: 'Paciente',
     component: () => import('../../views/pacientes/Paciente'),
     meta: {
@@ -48,7 +48,7 @@ rutas.push({
 
 // Actualizar
 rutas.push({
-    path: '/pacientes/actualizar/:uid/cliente/:uidCliente',
+    path: '/pacientes/actualizar/:uid',
     name: 'PacienteActualizar',
     component: () => import('../../views/pacientes/Actualizar'),
     meta: {
