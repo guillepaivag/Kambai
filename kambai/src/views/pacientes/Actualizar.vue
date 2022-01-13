@@ -50,7 +50,6 @@ export default {
     },
     async created() {
         const ref = db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid)
-        .collection('Clientes').doc(this.uidCliente)
         .collection('Pacientes').doc(this.uid)
 
         const doc = await ref.get()

@@ -104,10 +104,14 @@ class Cliente {
 
         console.log('this.getDatosCliente()', this.getDatosCliente())
 
-        await admin.firestore()
-        .collection('Usuarios').doc(uidUsuario)
-        .collection('Clientes').doc(this.uid)
-        .set(this.getDatosCliente())
+        try {
+            admin.firestore()
+            .collection('Usuarios').doc(uidUsuario)
+            .collection('Clientes').doc(this.uid)
+            .set(this.getDatosCliente())
+        } catch (error) {
+            console.log('aaaaaaaaaaaaaa: ', error)
+        }
         
         return this
     }

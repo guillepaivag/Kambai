@@ -106,21 +106,9 @@ controller.importarDatos = async (req, res) => {
     try {
 
         datosClientes.forEach( async (datoCliente) => {
-
+            // Agrgamos en la base de datos
             const cliente = new Cliente(datoCliente)
-
-            //agrgamos en la base de datos
             const resultado = await cliente.agregar(uidSolicitante)
-
-            // Actualizar la cantidad
-            const ref = admin.firestore().collection('Usuarios').doc(uidSolicitante)
-            const data = (await ref.get()).data()
-
-            //aumentamos la cantidad de clientes
-            ref.update({
-                cantidadClientes: data.cantidadClientes + 1
-            })
-
         })
 
 

@@ -11,10 +11,8 @@ cf.indexAlgoliaPacientes =
 functions
 .region('southamerica-east1')
 .firestore
-.document('Usuarios/{uidUsuario}/Pacientes/${uidPaciente}')
+.document('Usuarios/{uidUsuario}/Pacientes/{uidPaciente}')
 .onWrite(async ( change, context ) => {
-    // const { uidUsuario } = context.params
-    // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', uidUsuario)
     // 'Especies/{uidUsuario}'
     // 'Usuarios/{uidUsuario}/Clientes/{uidCliente}/Pacientes/${uidPaciente}'
 
