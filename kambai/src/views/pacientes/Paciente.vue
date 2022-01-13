@@ -1,6 +1,5 @@
 <template>
     <div>
-        {{ uid }}
         <div class="container mb-5">
             <v-row>
                 <v-btn
