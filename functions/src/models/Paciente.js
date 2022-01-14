@@ -10,7 +10,7 @@ class Paciente {
         this.raza = datosPaciente && datosPaciente.raza ? datosPaciente.raza : ''
         this.sexo = datosPaciente && datosPaciente.sexo ? datosPaciente.sexo : false
         this.pelaje = datosPaciente && datosPaciente.pelaje ? datosPaciente.pelaje : ''
-        this.peso = datosPaciente && datosPaciente.peso ? datosPaciente.peso : 0
+        this.peso = datosPaciente && datosPaciente.peso ? parseInt(datosPaciente.peso) : 0
         this.comida = datosPaciente && datosPaciente.comida ? datosPaciente.comida : ''
         this.viviendaInfo = datosPaciente && datosPaciente.viviendaInfo ? datosPaciente.viviendaInfo : ''
         this.ultimoCelo = datosPaciente && datosPaciente.ultimoCelo ? datosPaciente.ultimoCelo : null
@@ -20,7 +20,7 @@ class Paciente {
         this.reproductor = datosPaciente && datosPaciente.reproductor ? datosPaciente.reproductor : false
         this.castrado = datosPaciente && datosPaciente.castrado ? datosPaciente.castrado : false
         this.estaEnAdopcion = datosPaciente && datosPaciente.estaEnAdopcion ? datosPaciente.estaEnAdopcion : false
-        this.agresividad = datosPaciente && datosPaciente.agresividad ? datosPaciente.agresividad : 0
+        this.agresividad = datosPaciente && datosPaciente.agresividad ? parseInt(datosPaciente.agresividad) : 0
         this.patologias = datosPaciente && datosPaciente.patologias ? datosPaciente.patologias : ''
     }
 
@@ -105,7 +105,7 @@ class Paciente {
     }
 
     setPESO (peso = 0) {
-        this.peso = peso
+        this.peso = parseInt(peso)
     }
 
     setCOMIDA (comida = '') {
@@ -145,7 +145,7 @@ class Paciente {
     }
 
     setAGRESIVIDAD (agresividad = 0) {
-        this.agresividad = agresividad
+        this.agresividad = parseInt(agresividad)
     }
 
     setPATOLOGIAS (patologias = '') {

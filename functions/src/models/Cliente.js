@@ -3,7 +3,7 @@ const admin = require('../../firebase-service')
 class Cliente {
     constructor (datosCliente) {
         this.uid = datosCliente && datosCliente.uid ? datosCliente.uid : admin.firestore().collection('Cliente').doc().id
-        this.ci = datosCliente && datosCliente.ci ? datosCliente.ci : 0
+        this.ci = datosCliente && datosCliente.ci ? parseInt(datosCliente.ci) : 0
         this.nombre = datosCliente && datosCliente.nombre ? datosCliente.nombre : ''
         this.correo = datosCliente && datosCliente.correo ? datosCliente.correo : ''
         this.telefono = datosCliente && datosCliente.telefono ? datosCliente.telefono : ''
