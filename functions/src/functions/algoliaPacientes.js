@@ -24,37 +24,12 @@ functions
     const index = clientAlgolia.initIndex(INDEX_PACIENTES)
 
     async function deleteObjectPaciente() {
-        console.log('uidPaciente', uidPaciente)
         await index.deleteObject(uidPaciente)
 
         return true 
     }
 
     async function saveObjectPaciente() {
-        console.log('document', document)
-        console.log('cf.a: ', {
-            objectID: document.uid, 
-            nombrePaciente: document.nombrePaciente,
-            uidCliente: document.uidCliente,
-            fechaNacimiento: document.fechaNacimiento,
-            especie: document.especie,
-            raza: document.raza,
-            sexo: document.sexo ? 'Macho' : 'Hembra',
-            pelaje: document.pelaje,
-            peso: document.peso,
-            comida: document.comida,
-            viviendaInfo: document.viviendaInfo,
-            ultimoCelo: document.ultimoCelo,
-            chip: document.chip,
-            pedigree: document.pedigree,
-            fallecio: document.fallecio,
-            reproductor: document.reproductor,
-            castrado: document.castrado,
-            estaEnAdopcion: document.estaEnAdopcion,
-            agresividad: document.agresividad,
-            patologias: document.patologias,
-        })
-
         await index.saveObject({
             objectID: document.uid, 
             nombrePaciente: document.nombrePaciente,

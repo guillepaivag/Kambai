@@ -57,7 +57,7 @@ middleware.costruirDatos = (req, res, next) => {
             datosPaciente.raza = datosPaciente.raza ? datosPaciente.raza.trim() : ''
             datosPaciente.sexo = datosPaciente.sexo != undefined ? datosPaciente.sexo : false
             datosPaciente.pelaje = datosPaciente.pelaje ? datosPaciente.pelaje.trim() : ''
-            datosPaciente.peso = datosPaciente.peso ? datosPaciente.peso : 0
+            datosPaciente.peso = datosPaciente.peso ? parseInt(datosPaciente.peso) : 0
             datosPaciente.comida = datosPaciente.comida ? datosPaciente.comida.trim() : ''
             datosPaciente.viviendaInfo = datosPaciente.viviendaInfo ? datosPaciente.viviendaInfo.trim() : ''
             datosPaciente.ultimoCelo = datosPaciente.ultimoCelo ? milliseconds_a_timestamp(datosPaciente.ultimoCelo) : null
@@ -67,7 +67,7 @@ middleware.costruirDatos = (req, res, next) => {
             datosPaciente.reproductor = datosPaciente.reproductor != undefined ? datosPaciente.reproductor : false
             datosPaciente.castrado = datosPaciente.castrado != undefined ? datosPaciente.castrado : false
             datosPaciente.estaEnAdopcion = datosPaciente.estaEnAdopcion != undefined ? datosPaciente.estaEnAdopcion : false
-            datosPaciente.agresividad = datosPaciente.agresividad ? datosPaciente.agresividad : 0
+            datosPaciente.agresividad = datosPaciente.agresividad ? parseInt(datosPaciente.agresividad) : 0
             datosPaciente.patologias = datosPaciente.patologias ? datosPaciente.patologias.trim() : ''
         } else {
             datosPaciente.nombrePaciente != undefined ? datosPaciente.nombrePaciente = datosPaciente.nombrePaciente.trim() : ''
@@ -78,7 +78,7 @@ middleware.costruirDatos = (req, res, next) => {
             datosPaciente.raza != undefined ? datosPaciente.raza = datosPaciente.raza.trim() : ''
             datosPaciente.sexo != undefined ? datosPaciente.sexo = datosPaciente.sexo : ''
             datosPaciente.pelaje != undefined ? datosPaciente.pelaje = datosPaciente.pelaje.trim() : ''
-            datosPaciente.peso != undefined ? datosPaciente.peso = datosPaciente.peso : ''
+            datosPaciente.peso != undefined ? datosPaciente.peso = parseInt(datosPaciente.peso) : ''
             datosPaciente.comida != undefined ? datosPaciente.comida = datosPaciente.comida.trim() : ''
             datosPaciente.viviendaInfo != undefined ? datosPaciente.viviendaInfo = datosPaciente.viviendaInfo.trim() : ''
             datosPaciente.ultimoCelo != undefined ? datosPaciente.ultimoCelo = milliseconds_a_timestamp(datosPaciente.ultimoCelo) : ''
@@ -88,7 +88,7 @@ middleware.costruirDatos = (req, res, next) => {
             datosPaciente.reproductor != undefined ? datosPaciente.reproductor = datosPaciente.reproductor : ''
             datosPaciente.castrado != undefined ? datosPaciente.castrado = datosPaciente.castrado : ''
             datosPaciente.estaEnAdopcion != undefined ? datosPaciente.estaEnAdopcion = datosPaciente.estaEnAdopcion : ''
-            datosPaciente.agresividad != undefined ? datosPaciente.agresividad = datosPaciente.agresividad : ''
+            datosPaciente.agresividad != undefined ? datosPaciente.agresividad = parseInt(datosPaciente.agresividad) : ''
             datosPaciente.patologias != undefined ? datosPaciente.patologias = datosPaciente.patologias.trim() : ''
         }
 

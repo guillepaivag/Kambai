@@ -30,18 +30,6 @@ functions
     }
 
     async function saveObjectCliente () {
-        console.log('document', document)
-        console.log('cf.a: ', {
-            objectID: document.uid, 
-            ci: document.ci,
-            ciudad: document.ciudad,
-            correo: document.correo,
-            direccion: document.direccion,
-            nombre: document.nombre,
-            telefono: document.telefono,
-            telefonoCelular: document.telefonoCelular,
-        })
-
         await index.saveObject({
             objectID: document.uid, 
             ci: document.ci,                               
