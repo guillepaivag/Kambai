@@ -57,27 +57,26 @@ middlewaresPs.obtenerListaPorExcel = async ( req, res, next ) => {
                     millis = o.getTime()
                 }
                 
-                let datosCliente = {
+                let datosPaciente = {
                     nombrePaciente: row[2] ? String(row[2]) : '',
-                    sexo: row[3] ? String(row[3]) == 'Macho' ? true : false : false,
+                    sexo: row[3] ? ( String(row[3]) == 'Macho' ? true : false ) : false,
                     fechaNacimiento: row[4] ? admin.firestore.Timestamp.fromMillis(millis) : null, //ver con guille
                     especie: row[5] ? String(row[5]) : '',
                     raza: row[6] ? String(row[6]) : '',
                     pelaje: row[7] ? String(row[7]) : '',
-                    peso: row[8] ? Number(row[8]) : '',
+                    peso: row[8] ? Number(row[8]) : 0,
                     chip: row[9] ? String(row[9]) : '',
-                    castrado: row[11] ? String(row[11]) == 'Si' ? true : false : false,
-                    pedigree: row[12] ? String(row[12]) == 'Si' ? true : false : false,
-                    fallecio: row[13] ? String(row[13]) == 'Si' ? true : false : false,
+                    castrado: row[11] ? ( String(row[11]) == 'Si' ? true : false ) : false,
+                    pedigree: row[12] ? ( String(row[12]) == 'Si' ? true : false ) : false,
+                    fallecio: row[13] ? ( String(row[13]) == 'Si' ? true : false ) : false,
                     comida: row[14] ? String(row[14]) : '',
                     nombreCliente: row[15] ? String(row[15]) : '',
                     direccion: row[16] ? String(row[16]) : '',
                     telefono: row[17] ? String(row[17]) : '',
                     correo: row[18] ? String(row[18]) : '',
-
                 }
 
-                datosPacientes.push(datosCliente)
+                datosPacientes.push(datosPaciente)
                 
             })
             

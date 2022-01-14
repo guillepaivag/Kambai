@@ -119,21 +119,12 @@ controller.importarDatos = async (req, res) => {
 
         datosPacientes.forEach( async (datoPaciente) => {
 
-            let uidcliente = ""
+            let uidCliente = ""
 
             const {
-                nombreCliente, direccion, telefono, correo, nombrePaciente, sexo, fechaNacimiento, //ver con guille
+                nombreCliente, direccion, telefono, correo, nombrePaciente, sexo, fechaNacimiento, 
                 especie, raza, pelaje, peso, chip, castrado, pedigree, fallecio, comida,
             } = datoPaciente
-
-            // agreagamos a la collection clientes problemas
-            let datosCliente = {
-                nombreCliente: nombreCliente ? nombreCliente : "",
-                direccion: direccion ? direccion : "",
-                telefono: telefono ? telefono : "",
-                correo: correo ? correo : "",
-            }
-
 
             let clientesResultadoFirestore = await admin.firestore().collection('Usuarios').doc(uidSolicitante)
                                                 .collection("Clientes")
@@ -141,15 +132,16 @@ controller.importarDatos = async (req, res) => {
                                                 .where('direccion', '==', direccion)
                                                 .where('correo', '==', correo)
                                                 .get()
+                                            
             
             if ( clientesResultadoFirestore.docs.length === 1 ) {
-                //agregamos sin drama
 
                 uidCliente = clientesResultadoFirestore.docs[0].data().uid
 
+                datoPaciente.uidCliente = uidCliente
                 const paciente = new Paciente(datoPaciente)
                 await paciente.agregar(uidSolicitante, uidCliente )
-
+                
 
             } else if ( clientesResultadoFirestore.docs.length > 1 ) {
 
@@ -166,10 +158,11 @@ controller.importarDatos = async (req, res) => {
 
                     if ( cliente.data().telefonoCelular.includes(telefonoCelularABuscar) && !seHallo) {
 
-                        uidCliente = cliene.data.uid
-
+                        uidCliente = cliente.data().uid
+                        datoPaciente.uidCliente = uidCliente
                         const paciente = new Paciente(datoPaciente)
                         await paciente.agregar(uidSolicitante, uidCliente )
+                        
                         seHallo = true
                     }
 
@@ -177,29 +170,40 @@ controller.importarDatos = async (req, res) => {
 
                 if ( !seHallo ) {
 
-                    // agregar en pacientes problemas
-                    const documento = await admin.firestore().collection(`Usuarios`).doc(uidSolicitante)
-                    .collection("PacientesProblemas").add({
-                        datoPaciente
-                    })
+                    const uidProblema = admin.firestore().collection(`Usuarios`).doc().id
 
-                    documento.update({
-                        uid: documento.id
+                    // Agregar en pacientes problemas
+                    datoPaciente.uid = uidProblema
+                    const documento = await admin.firestore()
+                    .collection(`Usuarios`).doc(uidSolicitante)
+                    .collection("PacientesProblemas").doc(uidProblema)
+                    .set( datoPaciente )
+
+                    // Cargamos los posibles clientes
+
+                    clientesResultadoFirestore.docs.forEach ( documentoCliente => {
+
+                        const uidPosibleCliente = documentoCliente.data().uid
+
+                        const documento = await admin.firestore()
+                        .collection("Usuarios").doc(uidSolicitante)
+                        .collection("PacientesProblemas").doc(uidProblema)
+                        .collection("PosiblesClientes").doc(uidPosibleCliente)
+                        .set(documentoCliente.data())
+
                     })
                 }
 
             } else {
 
-                // agregar en pacientes problemas
+                const uidProblema = admin.firestore().collection(`Usuarios`).doc().id
 
-                const documento = await admin.firestore().collection(`Usuarios`).doc(uidSolicitante)
-                .collection("PacientesProblemas").add({
-                    datoPaciente
-                })
-
-                documento.update({
-                    uid: documento.id
-                })
+                // Agregar en pacientes problemas
+                datoPaciente.uid = uidProblema
+                const documento = await admin.firestore()
+                .collection(`Usuarios`).doc(uidSolicitante)
+                .collection("PacientesProblemas").doc(uidProblema)
+                .set( datoPaciente )
 
             }
 

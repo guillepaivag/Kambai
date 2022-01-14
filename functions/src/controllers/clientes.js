@@ -102,9 +102,12 @@ controller.importarDatos = async (req, res) => {
     try {
 
         datosClientes.forEach( async (datoCliente) => {
+
             // Agrgamos en la base de datos
             const cliente = new Cliente(datoCliente)
-            const resultado = await cliente.agregar(uidSolicitante)
+
+            await cliente.agregar(uidSolicitante)
+   
         })
 
 
