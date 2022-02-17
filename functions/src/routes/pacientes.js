@@ -19,6 +19,7 @@ const {
     actualizarPaciente,
     eliminarPaciente,
     importarDatos,
+    agregarNombreCliente
 } = require('../controllers/pacientes')
 
 const {
@@ -58,5 +59,10 @@ router.post('/importarDatos',
     obtenerListaPorExcel,
     importarDatos
 )
+
+router.post('/agregarNombreCliente',
+    estaAutenticado, 
+    agregarNombreCliente)
+
 
 module.exports = router
