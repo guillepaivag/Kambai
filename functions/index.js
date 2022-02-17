@@ -14,13 +14,13 @@ exports.kambaiApi = functions.region('southamerica-east1')
 .runWith({ timeoutSeconds: 540 })
 .https.onRequest(kambaiApi)
 
-// // Funciones de Cloud Functions
-// exports.incrementarCantidadCliente = incrementarCantidadCliente
-// exports.actualizacionCliente = actualizacionCliente
-// exports.decrementarCantidadCliente = decrementarCantidadCliente
+// Funciones de Cloud Functions
+exports.incrementarCantidadCliente = incrementarCantidadCliente
+exports.actualizacionCliente = actualizacionCliente
+exports.decrementarCantidadCliente = decrementarCantidadCliente
 
-// exports.incrementarCantidadPaciente = incrementarCantidadPaciente
-// exports.decrementarCantidadPaciente = decrementarCantidadPaciente
+exports.incrementarCantidadPaciente = incrementarCantidadPaciente
+exports.decrementarCantidadPaciente = decrementarCantidadPaciente
 
-// exports.indexAlgoliaClientes = indexAlgoliaClientes
-// exports.indexAlgoliaPacientes = indexAlgoliaPacientes
+exports.indexAlgoliaClientes = indexAlgoliaClientes
+exports.indexAlgoliaPacientes = indexAlgoliaPacientes
