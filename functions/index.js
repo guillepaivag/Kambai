@@ -1,7 +1,7 @@
 const functions = require('firebase-functions')
 
 // FUNCTIONS
-const { incrementarCantidadCliente, decrementarCantidadCliente } = require('./src/functions/cliente')
+const { incrementarCantidadCliente, actualizacionCliente, decrementarCantidadCliente } = require('./src/functions/cliente')
 const { incrementarCantidadPaciente, decrementarCantidadPaciente } = require('./src/functions/paciente')
 const { indexAlgoliaClientes } = require('./src/functions/algoliaClientes')
 const { indexAlgoliaPacientes } = require('./src/functions/algoliaPacientes')
@@ -10,13 +10,17 @@ const { indexAlgoliaPacientes } = require('./src/functions/algoliaPacientes')
 const kambaiApi = require('./kambaiApi')
 
 // REST-API de Kambai
-exports.kambaiApi = functions.region('southamerica-east1').https.onRequest(kambaiApi)
+exports.kambaiApi = functions.region('southamerica-east1')
+.runWith({ timeoutSeconds: 540 })
+.https.onRequest(kambaiApi)
 
-// Funciones de Cloud Functions
-exports.incrementarCantidadCliente = incrementarCantidadCliente
-exports.incrementarCantidadPaciente = incrementarCantidadPaciente
-exports.decrementarCantidadCliente = decrementarCantidadCliente
-exports.decrementarCantidadPaciente = decrementarCantidadPaciente
+// // Funciones de Cloud Functions
+// exports.incrementarCantidadCliente = incrementarCantidadCliente
+// exports.actualizacionCliente = actualizacionCliente
+// exports.decrementarCantidadCliente = decrementarCantidadCliente
 
-exports.indexAlgoliaClientes = indexAlgoliaClientes
-exports.indexAlgoliaPacientes = indexAlgoliaPacientes
+// exports.incrementarCantidadPaciente = incrementarCantidadPaciente
+// exports.decrementarCantidadPaciente = decrementarCantidadPaciente
+
+// exports.indexAlgoliaClientes = indexAlgoliaClientes
+// exports.indexAlgoliaPacientes = indexAlgoliaPacientes

@@ -101,7 +101,7 @@
                     //     color: 'deep-orange darken-1'
                     // },
                 ],
-                hoy: new Date().toISOString().substr(0, 10)
+                hoy: new Date().toISOString().substr(0, 10),
             }
         },
         methods: {

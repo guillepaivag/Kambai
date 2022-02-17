@@ -80,7 +80,8 @@ class Cliente {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uid válida.")
         if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
 
-        const ref = admin.firestore().collection('Usuarios').doc(uidUsuario)
+        const ref = admin.firestore()
+        .collection('Usuarios').doc(uidUsuario)
         .collection('Clientes').doc(uidCliente)
         
         const docCliente = await ref.get()
@@ -102,16 +103,10 @@ class Cliente {
     async agregar (uidUsuario) { 
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uid válida.")
 
-        console.log('this.getDatosCliente()', this.getDatosCliente())
-
-        try {
-            admin.firestore()
-            .collection('Usuarios').doc(uidUsuario)
-            .collection('Clientes').doc(this.uid)
-            .set(this.getDatosCliente())
-        } catch (error) {
-            console.log('aaaaaaaaaaaaaa: ', error)
-        }
+        admin.firestore()
+        .collection('Usuarios').doc(uidUsuario)
+        .collection('Clientes').doc(this.uid)
+        .set(this.getDatosCliente())
         
         return this
     }
@@ -121,8 +116,10 @@ class Cliente {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
 
         // asumimos que ya los datos son los que se quiere actualizar
-        await admin.firestore().collection('Usuarios').doc(uidUsuario)
-                    .collection('Clientes').doc(this.uid).update(datosCliente);
+        await admin.firestore()
+        .collection('Usuarios').doc(uidUsuario)
+        .collection('Clientes').doc(this.uid)
+        .update(datosCliente)
 
         return this
     }
@@ -133,8 +130,10 @@ class Cliente {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
         if(!uidCliente || typeof uidCliente != 'string') throw new Error("Necesita una uidCliente válida.")
 
-        await admin.firestore().collection('Usuarios').doc(uidUsuario)
-        .collection('Clientes').doc(uidCliente).delete()
+        await admin.firestore()
+        .collection('Usuarios').doc(uidUsuario)
+        .collection('Clientes').doc(uidCliente)
+        .delete()
 
         return this
     }

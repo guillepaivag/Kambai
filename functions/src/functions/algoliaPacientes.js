@@ -34,6 +34,7 @@ functions
             objectID: document.uid, 
             nombrePaciente: document.nombrePaciente,
             uidCliente: document.uidCliente,
+            nombreCliente: document.nombreCliente,
             fechaNacimiento: document.fechaNacimiento,
             especie: document.especie,
             raza: document.raza,

@@ -12,7 +12,7 @@ export default {
         'formulario-cliente': FormularioCliente
     },
     methods: {
-        async agregarCliente(datosCliente) {
+        async agregarCliente(datosCliente) {           
             const data = await this.$store.dispatch('agregarCliente', {
                 datosCliente
             })

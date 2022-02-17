@@ -15,7 +15,7 @@ export default {
     name: '',
     data() {
         return {
-            uidCliente: this.$route.params.uidCliente ? this.$route.params.uidCliente : null
+            uidCliente: this.$route.params.uidCliente ? this.$route.params.uidCliente : ''
         }
     },
     components: {

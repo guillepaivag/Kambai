@@ -16,18 +16,18 @@ middleware.validarDatos = async (req, res, next) => {
         if ( datosPaciente.uidCliente ) {
             let cliente = await Cliente.obtenerDatosPorUID(uidSolicitante, datosPaciente.uidCliente)
             
-            if ( !cliente ){
+            if ( !cliente )
                 throw new Error('El cliente debe existir')
-            }
+
+            datosPaciente.nombreCliente = cliente.nombre
         }
 
         // Verificar especie valida
         if ( datosPaciente.especie ) {
             const data = await admin.firestore().collection('Especies').doc(datosPaciente.especie).get()
             
-            if (!data.exists) {
+            if (!data.exists) 
                 throw new Error('La especie no existe.')
-            }
         }
         
         next()
@@ -44,13 +44,13 @@ middleware.costruirDatos = (req, res, next) => {
 
         const esOperacionAgregar = req.method === 'POST'
 
-        if (datosPaciente === undefined || !Object.keys(datosPaciente).length) {
+        if (datosPaciente === undefined || !Object.keys(datosPaciente).length) 
             throw new Error('La especie no existe.')
-        }
 
         if (esOperacionAgregar) {
             datosPaciente.nombrePaciente = datosPaciente.nombrePaciente ? datosPaciente.nombrePaciente.trim() : ''
             datosPaciente.uidCliente = datosPaciente.uidCliente ? datosPaciente.uidCliente.trim() : ''
+            datosPaciente.nombreCliente = datosPaciente.nombreCliente ? datosPaciente.nombreCliente.trim() : ''
             datosPaciente.fechaNacimiento = datosPaciente.fechaNacimiento ? milliseconds_a_timestamp(datosPaciente.fechaNacimiento) : null
             
             datosPaciente.especie = datosPaciente.especie ? datosPaciente.especie.trim() : ''
@@ -72,6 +72,7 @@ middleware.costruirDatos = (req, res, next) => {
         } else {
             datosPaciente.nombrePaciente != undefined ? datosPaciente.nombrePaciente = datosPaciente.nombrePaciente.trim() : ''
             datosPaciente.uidCliente != undefined ? datosPaciente.uidCliente = datosPaciente.uidCliente.trim() : ''
+            datosPaciente.nombreCliente != undefined ? datosPaciente.nombreCliente = datosPaciente.nombreCliente.trim() : ''
             datosPaciente.fechaNacimiento != undefined ? datosPaciente.fechaNacimiento = milliseconds_a_timestamp(datosPaciente.fechaNacimiento) : ''
             
             datosPaciente.especie != undefined ? datosPaciente.especie = datosPaciente.especie.trim() : ''

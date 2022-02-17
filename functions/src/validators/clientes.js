@@ -5,9 +5,6 @@ const validators = {}
 validators.validarDatosRequeridosCliente = [
     check("datosCliente")
         .exists(),
-    check("datosCliente.ci")
-        .exists()
-        .notEmpty(),
     check("datosCliente.nombre")
         .exists()
         .notEmpty(),

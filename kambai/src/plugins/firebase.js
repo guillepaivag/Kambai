@@ -5,7 +5,8 @@ import firebaseConfig from '@/config/firebase'
 firebase.initializeApp(firebaseConfig)
 import store from '@/store'
 
-if (location.hostname === 'localhost') {
+// location.hostname === 'localhost'
+if ( process.env.NODE_ENV === 'development' ) {
     firebase.firestore().useEmulator('localhost', 8080)
     firebase.auth().useEmulator('http://localhost:9099')
     firebase.functions().useEmulator('localhost', 5001)

@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.3bf4db5203c4d9517da89478b88031b6.js"
+  "/precache-manifest.9803ab54da6460abc64a043879fb3ba4.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "kambai"});

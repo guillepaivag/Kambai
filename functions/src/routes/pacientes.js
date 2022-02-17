@@ -53,11 +53,9 @@ router.delete('/eliminarPaciente/:uidPaciente',
     eliminarPaciente)
 
 router.post('/importarDatos',
-    
     estaAutenticado,
     busboyMiddleware,
     obtenerListaPorExcel,
-    //validarDatosPaciente,
     importarDatos
 )
 

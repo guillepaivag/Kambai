@@ -4,16 +4,20 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --port 7770",
+    "serveProd": "vue-cli-service serve --port 7770 --mode production",
     "build": "vue-cli-service build",
     "deploy": "cd .. && firebase deploy --only hosting"
   },
   "dependencies": {
+    "algoliasearch": "^4.12.0",
     "axios": "^0.23.0",
     "core-js": "^3.6.5",
     "firebase": "^8.10.0",
+    "instantsearch.css": "^7.4.5",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
     "vue-axios": "^3.3.7",
+    "vue-instantsearch": "^4.3.1",
     "vue-router": "^3.2.0",
     "vue-router-middleware-plugin": "^3.1.1",
     "vuelidate": "^0.7.6",

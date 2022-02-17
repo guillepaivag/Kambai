@@ -20,23 +20,7 @@
                 <v-row>
                     <v-col
                         cols="12"
-                        md="6"
-                    >
-                        <v-text-field
-                            v-model="input.ci"
-                            :error-messages="ErroresCi"
-                            :counter="infoInput.ci.max"
-                            label="CI del cliente"
-                            type="number"
-                            :readonly="operacion === 'leer'"
-                            @input="$v.input.ci.$touch()"
-                            @blur="$v.input.ci.$touch()"
-                        ></v-text-field>
-                    </v-col>
-
-                    <v-col
-                        cols="12"
-                        md="6"
+                        md="12"
                     >
                         <v-text-field
                             v-model="input.nombre"
@@ -57,7 +41,22 @@
                 <v-row>
                     <v-col
                         cols="12"
-                        md="12"
+                        md="6"
+                    >
+                        <v-text-field
+                            v-model="input.ci"
+                            :error-messages="ErroresCi"
+                            :counter="infoInput.ci.max"
+                            label="CI del cliente"
+                            type="number"
+                            :readonly="operacion === 'leer'"
+                            @input="$v.input.ci.$touch()"
+                            @blur="$v.input.ci.$touch()"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col
+                        cols="12"
+                        md="6"
                     >
                         <v-text-field
                             v-model="input.correo"
@@ -202,7 +201,7 @@ export default {
 
     validations: {
         input: {
-            ci: { required, numeric, maxLength: maxLength(infoInput.ci.max) },
+            ci: { numeric, maxLength: maxLength(infoInput.ci.max) },
             nombre: { required, maxLength: maxLength(infoInput.nombre.max) },
             correo: { email, maxLength: maxLength(infoInput.correo.max) },
             telefono: {  },
@@ -242,7 +241,7 @@ export default {
 
             !this.$v.input.ci.numeric && errors.push('La cédula de identidad debe ser numerico.')
             !this.$v.input.ci.maxLength && errors.push('Ya supero la cantidad máxima.')
-            !this.$v.input.ci.required && errors.push('La cédula de identidad no existe.')
+            // !this.$v.input.ci.required && errors.push('La cédula de identidad no existe.')
 
             return errors
         },
@@ -305,16 +304,14 @@ export default {
             let datos = {}
             await this.$v.$touch()
 
-            if (this.$v.input.$error) {
-                return
-            }
+            if (this.$v.input.$error) return
             
             this.input.ci ? this.input.ci = parseInt(this.input.ci) : ''
             
             if ( this.operacion !== 'actualizar' ) {
-                datos.ci = this.input.ci
                 datos.nombre = this.input.nombre
                 
+                datos.ci = this.input.ci ? this.input.ci : ''
                 datos.correo = this.input.correo ? this.input.correo : ''
                 datos.telefono = this.input.telefono ? this.input.telefono : ''
                 datos.telefonoCelular = this.input.telefonoCelular ? this.input.telefonoCelular : ''

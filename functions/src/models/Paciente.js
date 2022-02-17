@@ -5,6 +5,7 @@ class Paciente {
         this.uid = datosPaciente && datosPaciente.uid ? datosPaciente.uid : admin.firestore().collection('Paciente').doc().id
         this.nombrePaciente = datosPaciente && datosPaciente.nombrePaciente ? datosPaciente.nombrePaciente : ''
         this.uidCliente = datosPaciente && datosPaciente.uidCliente ? datosPaciente.uidCliente : ''
+        this.nombreCliente = datosPaciente && datosPaciente.nombreCliente ? datosPaciente.nombreCliente : ''
         this.fechaNacimiento = datosPaciente && datosPaciente.fechaNacimiento ? datosPaciente.fechaNacimiento : null
         this.especie = datosPaciente && datosPaciente.especie ? datosPaciente.especie : ''
         this.raza = datosPaciente && datosPaciente.raza ? datosPaciente.raza : ''
@@ -29,6 +30,7 @@ class Paciente {
             uid: this.uid,
             nombrePaciente: this.nombrePaciente,
             uidCliente: this.uidCliente,
+            nombreCliente: this.nombreCliente,
             fechaNacimiento: this.fechaNacimiento,
             especie: this.especie,
             raza: this.raza,
@@ -53,6 +55,7 @@ class Paciente {
         this.setUID(datosPaciente && datosPaciente.uid ? datosPaciente.uid : null)
         this.setNOMBREPACIENTE(datosPaciente && datosPaciente.nombrePaciente ? datosPaciente.nombrePaciente : null)
         this.setUIDCLIENTE(datosPaciente && datosPaciente.uidCliente ? datosPaciente.uidCliente : null)
+        this.setNombreCliente(datosPaciente && datosPaciente.nombreCliente ? datosPaciente.nombreCliente : null)
         this.setFECHANACIMIENTO(datosPaciente && datosPaciente.fechaNacimiento ? datosPaciente.fechaNacimiento : null)
         this.setESPECIE(datosPaciente && datosPaciente.especie ? datosPaciente.especie : null)
         this.setRAZA(datosPaciente && datosPaciente.raza ? datosPaciente.raza : null)
@@ -82,7 +85,11 @@ class Paciente {
 
     setUIDCLIENTE (uidCliente = '') {
         this.uidCliente = uidCliente
-    }    
+    } 
+    
+    setNombreCliente (nombreCliente = '') {
+        this.nombreCliente = nombreCliente
+    }
 
     setFECHANACIMIENTO (fechaNacimiento = null) {
         this.fechaNacimiento = fechaNacimiento
@@ -221,7 +228,7 @@ class Paciente {
         if(!uidUsuario || typeof uidUsuario != 'string') throw new Error("Necesita una uidUsuario válida.")
 
         // asumimos que ya los datos son los que se quiere actualizar
-        const res = await admin.firestore()
+        await admin.firestore()
         .collection('Usuarios').doc(uidUsuario)
         .collection('Pacientes').doc(this.uid)
         .update(datosPaciente)

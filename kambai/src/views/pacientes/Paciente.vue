@@ -30,7 +30,12 @@
                 absolute
                 color="blue"
             ></v-progress-linear>
-            <formulario-paciente v-if="datosPaciente" operacion="leer" :datosPaciente="datosPaciente" />
+            <formulario-paciente 
+                v-if="datosPaciente" 
+                operacion="leer" 
+                :identificadorCliente="uidCliente" 
+                :datosPaciente="datosPaciente" 
+            />
         </div>
 
         <v-dialog
@@ -91,7 +96,7 @@ export default {
     data() {
         return {
             uid: this.$route.params.uid,
-            uidCliente: this.$route.params.uidCliente,
+            uidCliente: '',
             datosPaciente: null,
             estadoDialogController: false,
             uidConfirmacionAccion: ''
@@ -114,7 +119,8 @@ export default {
         }
     },
     async created() {
-        const ref = db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid)
+        const ref = db
+        .collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid)
         .collection('Pacientes').doc(this.uid)
 
         const doc = await ref.get()
@@ -122,6 +128,7 @@ export default {
         const data = doc.data()
 
         this.datosPaciente = data
+        this.uidCliente = data.uidCliente
     },
 }
 </script>

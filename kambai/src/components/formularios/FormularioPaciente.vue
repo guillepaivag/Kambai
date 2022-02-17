@@ -20,83 +20,79 @@
                 <v-row>
                     <v-col
                         cols="12"
-                        md="6"
-                    >
-                        <v-text-field
-                            v-model="input.nombrePaciente"
-                            :error-messages="ErroresNombrePaciente"
-                            :counter="infoInput.nombrePaciente.max"
-                            label="Nombre del paciente"
-                            class="disable-events"
-                            :readonly="operacion === 'leer'"
-                            @input="$v.input.nombrePaciente.$touch()"
-                            @blur="$v.input.nombrePaciente.$touch()"
-                        ></v-text-field>
+                        md="7"
+                    >   
+                        <div>
+                            <v-text-field
+                                v-model="input.nombrePaciente"
+                                :error-messages="ErroresNombrePaciente"
+                                :counter="infoInput.nombrePaciente.max"
+                                label="Nombre del paciente"
+                                class="disable-events"
+                                :readonly="operacion === 'leer'"
+                                @input="$v.input.nombrePaciente.$touch()"
+                                @blur="$v.input.nombrePaciente.$touch()"
+                            ></v-text-field>
+                        </div>
+
+                        <div class="mt-10">
+                            <v-menu
+                                ref="menu"
+                                v-model="menu"
+                                :close-on-content-click="false"
+                                :return-value.sync="input.fechaNacimiento"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="auto"
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field
+                                        v-model="input.fechaNacimiento"
+                                        label="Fecha de nacimiento"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        :readonly="operacion === 'leer'"
+                                        :error-messages="ErroresFechaNacimiento"
+                                        @input="$v.input.fechaNacimiento.$touch()"
+                                        @blur="$v.input.fechaNacimiento.$touch()"
+                                    ></v-text-field>
+                                </template>
+                                <v-date-picker
+                                    v-model="input.fechaNacimiento"
+                                    no-title
+                                    scrollable
+                                >
+                                    <v-spacer></v-spacer>
+                                    <v-btn
+                                        text
+                                        color="blue"
+                                        @click="menu = false"
+                                    >
+                                        Cancel
+                                    </v-btn>
+                                </v-date-picker>
+                            </v-menu>
+                        </div>
+                        
                     </v-col>
 
                     <v-col
                         cols="12"
-                        md="6"
+                        md="5"
                     >
-                        <v-autocomplete
-                            v-model="clienteSeleccionado"
-                            :loading="isLoading"
-                            :items="clientesTextTemp"
-                            :search-input.sync="busquedorCliente"
-                            class="mx-4"
-                            flat
-                            hide-no-data
-                            label="Dueño (CI - Nombre)"
-                            :readonly="operacion === 'leer' || operacion === 'agregar' && identificadorCliente"
-                            :error-messages="ErroresUidCliente"
-                            @input="$v.input.uidCliente.$touch()"
-                            @blur="$v.input.uidCliente.$touch()"
-                        ></v-autocomplete>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col
-                        cols="12"
-                        md="6"
-                    >
-                        <v-menu
-                            ref="menu"
-                            v-model="menu"
-                            :close-on-content-click="false"
-                            :return-value.sync="input.fechaNacimiento"
-                            transition="scale-transition"
-                            offset-y
-                            min-width="auto"
-                        >
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                    v-model="input.fechaNacimiento"
-                                    label="Fecha de nacimiento"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on"
-                                    :readonly="operacion === 'leer'"
-                                    :error-messages="ErroresFechaNacimiento"
-                                    @input="$v.input.fechaNacimiento.$touch()"
-                                    @blur="$v.input.fechaNacimiento.$touch()"
-                                ></v-text-field>
-                            </template>
-                            <v-date-picker
-                                v-model="input.fechaNacimiento"
-                                no-title
-                                scrollable
-                            >
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                    text
-                                    color="blue"
-                                    @click="menu = false"
-                                >
-                                    Cancel
-                                </v-btn>
-                            </v-date-picker>
-                        </v-menu>
+                        <AlgoliaClienteUID 
+                            v-if="operacion === 'agregar' && !identificadorCliente" 
+                            accion="solo-busqueda"
+                            @uidClienteSeleccionado="uidClienteSeleccionado($event)" 
+                        />
+                        <AlgoliaClienteUID 
+                            v-else 
+                            accion="busqueda-inicializada"
+                            :uidClienteProps="identificadorCliente" 
+                            @uidClienteSeleccionado="uidClienteSeleccionado($event)" 
+                        />
                     </v-col>
                 </v-row>
 
@@ -427,6 +423,7 @@
 import { fb, db } from '../../plugins/firebase'
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, email, numeric, minValue, maxValue } from 'vuelidate/lib/validators'
+import AlgoliaClienteUID from '@/components/clientes/AlgoliaClienteUID'
 
 const infoInput = {
     nombrePaciente: {
@@ -494,48 +491,29 @@ export default {
             isLoading: false,
 
             especies: [],
-            clientes: [],
-            clientesText: [],
             sexos: [
               { text: 'Hembra', value: false },
               { text: 'Macho', value: true },
             ],
-
-            sexoSeleccionado: {
-                text: 'Hembra', value: false
-            },
+            
             especieSeleccionada: {
                 text: 'Elegir una especie',
                 value: ''
             },
-            clienteSeleccionado: '',
+            sexoSeleccionado: {
+                text: 'Hembra', value: false
+            },
             
-            clientesTextTemp: [],
-            busquedorCliente: '',
-
             menu: false,
             menu2: false,
         }
     },
 
+    components: {
+        AlgoliaClienteUID,
+    },
+
     watch: {
-        busquedorCliente (val) {
-            if ( !val ) {
-                this.clientesTextTemp = JSON.parse( JSON.stringify( this.clientesText ) )
-                return
-            }
-
-            val !== this.clienteSeleccionado && this.querySelections(val)
-        },
-        clienteSeleccionado (val) {
-            if ( !val ) return
-
-            const ci = val.split(' - ')[0]
-
-            const cliente = this.clientes.find(cliente => cliente.ci === parseInt(ci))
-
-            this.input.uidCliente = cliente.uid
-        },
         'input.fechaNacimiento': function (val) {
             this.$refs.menu.save(val)
         },
@@ -684,21 +662,9 @@ export default {
     },
 
     methods: {
-        querySelections (v) {
-            this.isLoading = true
-
-            if (!this.clientes.length) {
-                this.isLoading = false
-                return 
-            }
-
-            // Simulated ajax query
-            setTimeout(() => {
-                this.clientesTextTemp = this.clientesText.filter(clienteTexto => {
-                    return (clienteTexto || '').toLowerCase().indexOf((v || '').toLowerCase()) > -1
-                })
-                this.isLoading = false
-            }, 500)
+        uidClienteSeleccionado( data = {} ) {
+            const { uid } = data
+            this.input.uidCliente = uid
         },
         async enviar () {
             let datos = {}
@@ -827,6 +793,8 @@ export default {
             this.operacion !== 'actualizar' ? this.$emit('datosNuevos', datos) : this.$emit('datosActualizados', datos)
         },
         limpiar () {
+            if (this.operacion !== 'agregar') return
+
             this.$v.$reset()
             this.input = {
                 nombrePaciente: '',
@@ -850,21 +818,8 @@ export default {
                 patologias: ``,
             }
 
-            if (this.operacion === 'agregar' && this.identificadorCliente) {
-                // Por cliente
+            if (this.identificadorCliente) 
                 this.input.uidCliente = this.identificadorCliente
-
-                const cliente = this.clientes.find(cliente => cliente.uid === this.identificadorCliente)
-
-                this.busquedorCliente = `${cliente.ci} - ${cliente.nombre}`
-                this.clienteSeleccionado = `${cliente.ci} - ${cliente.nombre}`
-                this.clientesTextTemp = JSON.parse( JSON.stringify( this.clientesText ) )
-            } else {
-                // Cliente
-                this.clienteSeleccionado = ''
-                this.busquedorCliente = ''
-                this.clientesTextTemp = JSON.parse( JSON.stringify( this.clientesText ) )
-            }
 
             // Sexo
             this.sexoSeleccionado = {
@@ -878,45 +833,40 @@ export default {
             }
         },
         reiniciar () {
-            if (this.operacion === 'actualizar') {
-                this.input.nombrePaciente = this.datosPaciente.nombrePaciente
-                this.input.uidCliente = this.datosPaciente.uidCliente
-                this.input.fechaNacimiento = new Date(this.datosPaciente.fechaNacimiento.seconds * 1000).toISOString().substr(0, 10)
-                
-                this.input.especie = this.datosPaciente.especie
-                this.input.raza = this.datosPaciente.raza
-                this.input.sexo = this.datosPaciente.sexo
-                this.input.pelaje = this.datosPaciente.pelaje
-                this.input.peso = this.datosPaciente.peso
-                this.input.comida = this.datosPaciente.comida
-                this.input.viviendaInfo = this.datosPaciente.viviendaInfo
-                this.input.ultimoCelo = this.datosPaciente.ultimoCelo ? 
-                    new Date(this.datosPaciente.ultimoCelo.seconds * 1000).toISOString().substr(0, 10) : ''
-                this.input.chip = this.datosPaciente.chip
-                this.input.pedigree = this.datosPaciente.pedigree
-                this.input.fallecio = this.datosPaciente.fallecio
-                this.input.reproductor = this.datosPaciente.reproductor
-                this.input.castrado = this.datosPaciente.castrado
-                this.input.estaEnAdopcion = this.datosPaciente.estaEnAdopcion
-                this.input.agresividad = this.datosPaciente.agresividad
-                this.input.patologias = this.datosPaciente.patologias
+            if (this.operacion !== 'actualizar') return
 
-                // Cliente
-                const cliente = this.clientes.find(cliente => cliente.uid === this.datosPaciente.uidCliente)
+            this.input.nombrePaciente = this.datosPaciente.nombrePaciente
+            this.input.uidCliente = this.datosPaciente.uidCliente
+            this.input.fechaNacimiento = new Date(this.datosPaciente.fechaNacimiento.seconds * 1000).toISOString().substr(0, 10)
+            
+            this.input.especie = this.datosPaciente.especie
+            this.input.raza = this.datosPaciente.raza
+            this.input.sexo = this.datosPaciente.sexo
+            this.input.pelaje = this.datosPaciente.pelaje
+            this.input.peso = this.datosPaciente.peso
+            this.input.comida = this.datosPaciente.comida
+            this.input.viviendaInfo = this.datosPaciente.viviendaInfo
+            this.input.ultimoCelo = this.datosPaciente.ultimoCelo ? 
+                new Date(this.datosPaciente.ultimoCelo.seconds * 1000).toISOString().substr(0, 10) : ''
+            this.input.chip = this.datosPaciente.chip
+            this.input.pedigree = this.datosPaciente.pedigree
+            this.input.fallecio = this.datosPaciente.fallecio
+            this.input.reproductor = this.datosPaciente.reproductor
+            this.input.castrado = this.datosPaciente.castrado
+            this.input.estaEnAdopcion = this.datosPaciente.estaEnAdopcion
+            this.input.agresividad = this.datosPaciente.agresividad
+            this.input.patologias = this.datosPaciente.patologias
 
-                this.clienteSeleccionado = `${cliente.ci} - ${cliente.nombre}`
-                this.busquedorCliente = `${cliente.ci} - ${cliente.nombre}`
-                this.clientesTextTemp = JSON.parse( JSON.stringify( this.clientesText ) )
+            // Sexo
+            this.sexoSeleccionado = this.sexos.find(sexo => sexo.value === this.datosPaciente.sexo)
 
-                // Sexo
-                this.sexoSeleccionado = this.sexos.find(sexo => sexo.value === this.datosPaciente.sexo)
-
-                // Especie
-                this.especieSeleccionada = this.especies.find(especie => especie.value === this.datosPaciente.especie)
-            }
+            // Especie
+            this.especieSeleccionada = this.especies.find(especie => especie.value === this.datosPaciente.especie)
         }
     },
     async mounted() {
+
+        console.log('this.identificadorCliente', this.identificadorCliente)
 
         // Leer y actualizar: Cargar datos
         if (this.operacion !== 'agregar') {
@@ -943,17 +893,6 @@ export default {
         }
 
         this.isLoading = true
-        
-        // Clientes
-        this.clientes = []
-        const snapshot = await db.collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid)
-        .collection('Clientes').get()
-
-        snapshot.docs.forEach(doc => {
-            this.clientes.push(doc.data())                                          // Arreglo de datos de todos los clientes de un veterinario
-            this.clientesText.push(`${doc.data().ci} - ${doc.data().nombre}`)       // Solo para operacion de busqueda
-            this.clientesTextTemp.push(`${doc.data().ci} - ${doc.data().nombre}`)   // Solo para operacion de busqueda
-        })
 
         // Especies
         const snapshotEspecies = await db.collection('Especies').get()
@@ -973,12 +912,8 @@ export default {
         // Leer y actualizar: Insertar cliente
         if (this.operacion !== 'agregar') {
             // Cliente
-            const cliente = this.clientes.find(cliente => cliente.uid === this.datosPaciente.uidCliente)
-
-            this.clienteSeleccionado = `${cliente.ci} - ${cliente.nombre}`
-            this.busquedorCliente = `${cliente.ci} - ${cliente.nombre}`
-            this.clientesTextTemp = JSON.parse( JSON.stringify( this.clientesText ) )
-
+            this.input.uidCliente = this.identificadorCliente
+            
             // Sexo
             this.sexoSeleccionado = this.sexos.find(sexo => sexo.value === this.datosPaciente.sexo)
 
@@ -989,11 +924,6 @@ export default {
         // Agregar por cliente
         if (this.operacion === 'agregar' && this.identificadorCliente) {
             this.input.uidCliente = this.identificadorCliente
-
-            const cliente = this.clientes.find(cliente => cliente.uid === this.identificadorCliente)
-
-            this.clienteSeleccionado = `${cliente.ci} - ${cliente.nombre}`
-            this.busquedorCliente = `${cliente.ci} - ${cliente.nombre}`
         }
     },
 }

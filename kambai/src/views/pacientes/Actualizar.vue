@@ -11,6 +11,7 @@
                 v-if="datosPaciente" 
                 operacion="actualizar" 
                 @datosActualizados="actualizarPaciente($event)"
+                :identificadorCliente="uidCliente" 
                 :datosPaciente="datosPaciente" 
             />
         </div>
@@ -26,7 +27,7 @@ export default {
     data() {
         return {
             uid: this.$route.params.uid,
-            uidCliente: this.$route.params.uidCliente,
+            uidCliente: '',
             datosPaciente: null,
             estadoDialogController: false,
             uidConfirmacionAccion: ''
@@ -57,6 +58,7 @@ export default {
         const data = doc.data()
 
         this.datosPaciente = data
+        this.uidCliente = data.uidCliente
     },
 }
 </script>

@@ -100,13 +100,11 @@ controller.importarDatos = async (req, res) => {
     const { uidSolicitante, datosAuthSolicitante } = kambaiDatos
 
     try {
-
-        datosClientes.forEach( async (datoCliente) => {
+        datosClientes.forEach(async (datoCliente) => {
             // Agrgamos en la base de datos
             const cliente = new Cliente(datoCliente)
-            const resultado = await cliente.agregar(uidSolicitante)
+            await cliente.agregar(uidSolicitante)
         })
-
 
         return res.status(200).json({
             codigo: 'Exito',
@@ -123,5 +121,6 @@ controller.importarDatos = async (req, res) => {
     }
 
 }
+
 
 module.exports = controller

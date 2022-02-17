@@ -39,7 +39,7 @@
                         <td>{{ item.sexo ? 'Macho' : 'Hembra' }}</td>
                         <td>
                             <v-btn
-                                :to="`/pacientes/paciente/${item.uid}/cliente/${$route.params.uid}`"
+                                :to="`/pacientes/paciente/${item.uid}`"
                                 small
                                 rounded
                                 color="blue"

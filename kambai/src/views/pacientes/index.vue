@@ -1,331 +1,297 @@
 <template>
-    <div class="">
-        <v-subheader class="cabecera">
-            <b class="titulo">Paciente</b>
-            <v-spacer></v-spacer>
-            <v-btn
-                small
-                rounded
-                color="blue"
-                dark
-                to="/pacientes/agregar"
-            >
-                Nuevo paciente
-            </v-btn>
-        </v-subheader>
+  <div>
+    <v-subheader class="cabecera">
+        <b class="titulo">Paciente</b>
+        <v-spacer></v-spacer>
 
-        <v-divider />
-
-        <v-container class="buscadores">
-            <v-row>
-                <v-col
-                cols="12"
-                md="6"
-                >
-                <v-text-field
-                    v-model="input.nombre"
-                    label="Nombre"
-                ></v-text-field>
-                </v-col>
-
-                <v-col
-                cols="12"
-                md="6"
-                >
-                <v-text-field
-                    v-model="input.raza"
-                    label="Raza"
-                ></v-text-field>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col
-                cols="12"
-                md="6"
-                >
-                <v-text-field
-                    v-model="input.especie"
-                    label="Especie"
-                ></v-text-field>
-                </v-col>
-                <v-col
-                cols="12"
-                md="6"
-                >
-                    <v-select
-                        v-model="sexoSelect"
-                        :hint="`${sexoSelect.value}`"
-                        :items="sexos"
-                        item-text="text"
-                        item-value="value"
-                        label="Sexo"
-                        persistent-hint
-                        return-object
-                        single-line
-                    ></v-select>
-                </v-col>
-            </v-row>
-        </v-container>
-        <div class="mb-5">
-            <v-btn
-                rounded
-                color="blue"
-                dark
-                v-on:click="inicializarLista"
-            >
-            Buscar
-            </v-btn>
-        </div>
-
-        <v-divider />
-
-        <v-progress-linear
-            :active="buscando"
-            :indeterminate="buscando"
-            absolute
+        <v-btn
+            small
+            rounded
             color="blue"
-        ></v-progress-linear>
-        <v-simple-table class="mt-5">
+            dark
+            to="/pacientes/agregar"
+        >
+            Nuevo paciente
+        </v-btn>
+        
+    </v-subheader>
 
-            <template v-slot:default>
-                <thead>
-                    <tr>
-                        <th class="text-left">
-                            Nombre Mascota
-                        </th>
-                        <th class="text-left">
-                            Raza
-                        </th>
-                        <th class="text-left">
-                            Especie
-                        </th>
-                        <th class="text-left">
-                            Sexo
-                        </th>
-                        <th class="text-left">
-                            Acciones
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="item in pacientes"
-                        :key="item.name"
-                    >
-                        <td>{{ item.nombrePaciente }}</td>
-                        <td>{{ item.raza }}</td>
-                        <td>{{ item.especie }}</td>
-                        <td>{{ item.sexo ? 'Macho' : 'Hembra' }}</td>
-                        <td>
-                            <v-btn
-                                :to="`/pacientes/paciente/${item.uid}`"
-                                small
+    <v-divider />
+    
+    <div class="mt-10">
+        <v-row>
+            <v-col class="buscadorPacientesContenedor" cols="12" :md="conFiltros ? 8 : 12">
+                <ais-instant-search 
+                    :search-client="searchClient" 
+                    :index-name="$store.getters.getIndexPacientes"
+                >
+                    <ais-configure v-if="uidCliente" :filters="filters" :hitsPerPage="5" />
+                    <ais-configure v-else :hitsPerPage="5" />
+                    <div>
+                      <v-row>
+                        <v-col cols="12" sm="10">
+                          <ais-search-box placeholder="Nombre, raza, especie, sexo" />
+                        </v-col>
+                        <v-col cols="12" sm="2">
+                          <v-btn
+                            class="btnFiltros mr-5"
+                            small
+                            rounded
+                            :color="conFiltros ? 'green' : 'red'"
+                            dark
+                            v-on:click="conFiltros = !conFiltros"
+                          >
+                            Filtros
+                          </v-btn>
+                        </v-col>
+                      </v-row>
+                    </div>
+                    <div class="mt-5">
+                        <ais-hits>
+                            <template v-slot:item="{ item }">
+                                <div class="cartaContainer">
+                                    <v-list-item three-line>
+                                    <v-list-item-content>
+                                        <!-- <div class="text-overline mb-4">
+                                        {{ item.ci }}
+                                        </div> -->
+                                        <v-list-item-title class="text-h5 mb-1">
+                                        {{ item.nombrePaciente }}
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                        Paciente de Kambai
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    </v-list-item>
+                                    
+                                    <div class="mt-3">
+                                        <v-btn
+                                            :to="`/pacientes/paciente/${item.objectID}`"
+                                            rounded
+                                            color="blue"
+                                            class="white--text"
+                                        >
+                                            <v-icon left color="white">
+                                                mdi-cat
+                                            </v-icon>
+                                            Ver paciente
+                                        </v-btn>
+                                    </div>
+                                </div>
+                            </template>
+                        </ais-hits>
+                    </div>
+
+                    <v-divider></v-divider>
+
+                    <div class="mt-5" style="text-align: center;">
+                      <ais-pagination>
+                        <template
+                          v-slot="{
+                            currentRefinement,
+                            nbPages,
+                            pages,
+                            isFirstPage,
+                            isLastPage,
+                            refine,
+                            createURL
+                          }"
+                        >
+                          <ul>
+                            <li v-if="!isFirstPage">
+                                <v-btn
+                                  :href="createURL(0)" 
+                                  @click.prevent="refine(0)"
+                                  rounded
+                                  small
+                                  color="blue"
+                                  class="white--text"
+                                >
+                                  <span class="material-icons">
+                                    keyboard_double_arrow_left
+                                  </span>
+                                </v-btn>
+                            </li>
+                            <li v-if="!isFirstPage">
+                              <v-btn
+                                :href="createURL(currentRefinement - 1)"
+                                @click.prevent="refine(currentRefinement - 1)"
                                 rounded
+                                small
                                 color="blue"
                                 class="white--text"
-                            >
-                                <v-icon left color="white">
-                                    mdi-cat
-                                </v-icon>
-                                Ver paciente
-                            </v-btn>
-                            
-                        </td>
-                    </tr>
-                </tbody>
-            </template>
-        </v-simple-table>
-
-        <v-divider class="mt-5 mb-5" v-if="existeMasDatos" />
-
-        <div class="text-center mb-5" v-if="existeMasDatos">
-            <v-btn
-                rounded
-                color="blue"
-                class="white--text"
-                v-on:click="paginar"
-            >
-                <v-icon left color="white">
-                    mdi-plus
-                </v-icon>
-                Mostrar más
-            </v-btn>
-        </div>
+                              >
+                                <span class="material-icons">
+                                  keyboard_arrow_left
+                                </span>
+                              </v-btn>
+                            </li>
+                            <li v-for="page in pages" :key="page">
+                              <v-btn
+                                :href="createURL(page)"
+                                :style="{ fontWeight: page === currentRefinement ? 'bold' : '' }"
+                                @click.prevent="refine(page)"
+                                rounded
+                                small
+                                color="blue"
+                                class="white--text"
+                              >
+                                {{ page + 1 }}
+                              </v-btn>
+                            </li>
+                            <li v-if="!isLastPage">
+                              <v-btn
+                                :href="createURL(currentRefinement + 1)"
+                                @click.prevent="refine(currentRefinement + 1)"
+                                rounded
+                                small
+                                color="blue"
+                                class="white--text"
+                              >
+                                <span class="material-icons">
+                                  keyboard_arrow_right
+                                </span>
+                              </v-btn>
+                            </li>
+                            <li v-if="!isLastPage">
+                              <v-btn
+                                :href="createURL(nbPages)" 
+                                @click.prevent="refine(nbPages)"
+                                rounded
+                                small
+                                color="blue"
+                                class="white--text"
+                              >
+                                <span class="material-icons">
+                                  keyboard_double_arrow_right
+                                </span>
+                              </v-btn>
+                            </li>
+                          </ul>
+                        </template>
+                      </ais-pagination>
+                    </div>
+                </ais-instant-search>
+            </v-col>
+            <v-col cols="12" :md="smFiltros">
+                <div class="filtrosContenedor" v-if="conFiltros && smFiltros">
+                  <h2 class="text-h5 mb-1">Filtro de cliente:</h2>
+                  <div class="mt-3">
+                    <AlgoliaClienteUID 
+                      accion="solo-busqueda"
+                      @uidClienteSeleccionado="uidClienteSeleccionado($event)" 
+                    />
+                  </div>
+                </div>
+            </v-col>
+        </v-row>
     </div>
+  </div>
 </template>
 
 <script>
-import { fb, db } from '../../plugins/firebase'
+import algoliasearch from 'algoliasearch/lite';
+import 'instantsearch.css/themes/satellite-min.css';
+import AlgoliaClienteUID from '@/components/clientes/AlgoliaClienteUID'
 
 export default {
-    name: '',
-    props: {
-        uidCliente: String
-    },
-    data() {
-        return {
-            input: {
-                nombre: '',
-                raza: '',
-                especie: '',
-                sexo: undefined,
-            },
-            sexoSelect: { text: 'Sexo', value: undefined },
-            sexos: [
-                { text: 'Sexo', value: undefined },
-                { text: 'Hembra', value: false },
-                { text: 'Macho', value: true },
-            ],
-            MAXIMO: 7,
-            ultimoDocumento: null,
-            existeMasDatos: false,
-            pacientes: [],
-            buscando: false,
-            pacientesTotalesFiltrados: [],
-            pagina: 0,
-        }
-    },
-    watch: {
-        sexoSelect: function (nuevo, viejo) {
-            this.input.sexo = nuevo.value
-        }
-    },
-    methods: {
-        async inicializarLista () {
-
-            const {
-                nombre,
-                correo,
-                ci,
-            } = this.input
-
-            this.buscando = true
-
-            const ref = fb.firestore()
-            .collection('Usuarios').doc(this.$store.state.usuarios.usuario.uid)
-            .collection('Pacientes')
-
-            const snapshot = await ref.get()
-            
-            // console.log(snapshot.docs)
-
-            this.pagina = 0
-            this.$store.state.pacientes.listaPacientes = []
-            this.pacientesTotalesFiltrados = []
-            snapshot.docs.forEach(doc => {
-                this.$store.state.pacientes.listaPacientes.push( doc.data() )
-                this.pacientesTotalesFiltrados.push( doc.data() )
-            })
-
-            this.paginar()
-            this.buscando = false
- 
-        },
-        paginar () {
-
-            this.pagina++
-
-            let indexInicio = (this.pagina - 1) * this.MAXIMO
-            let indexFin = indexInicio + ( this.MAXIMO - 1 )
-
-            if (!indexInicio) { 
-                this.filtrar()
-                this.pacientes = []
-            }
-            
-            const cantidadPacientes = this.pacientesTotalesFiltrados.length
-            for (let i = indexInicio; i <= indexFin && i < cantidadPacientes; i++) {
-                const paciente = this.pacientesTotalesFiltrados[i]
-                this.pacientes.push( paciente )
-            }
-
-            this.verificarSiHayMasDatos()
-
-        },
-        filtrar ( ref, datosBusqueda ) {
-            const {
-                nombre,
-                raza,
-                especie,
-                sexo
-            } = this.input
-
-            if ( !nombre && !raza && !especie && sexo === undefined) return
-            
-            let arrNombre, arrRaza, arrEspecie, arrSexo
-            this.pacientesTotalesFiltrados = []
-
-            if(nombre){
-                const res = this.$store.state.pacientes.listaPacientes.filter(paciente => {
-                    return paciente.nombrePaciente.toLowerCase().includes(nombre.toLowerCase())
-                })
-                arrNombre = []
-                arrNombre.push(...res)
-            }
-
-            if(raza){
-                const res = this.$store.state.pacientes.listaPacientes.filter(paciente => {
-                    return paciente.raza.toLowerCase().includes(raza.toLowerCase())
-                })
-                arrRaza = []
-                arrRaza.push(...res)
-            }
-
-            if(especie){
-
-                const res = this.$store.state.pacientes.listaPacientes.filter(paciente => {
-                    return paciente.especie.toLowerCase().includes(especie.toLowerCase())
-                })
-                arrEspecie = []
-                arrEspecie.push(...res)
-            }
-
-            if(sexo !== undefined) {
-                const res = this.$store.state.pacientes.listaPacientes.filter(paciente => {
-                    return paciente.sexo === sexo
-                })
-                arrSexo = []
-                arrSexo.push(...res)
-            }
-
-            if( !arrNombre && !arrRaza && !arrEspecie && !arrSexo){
-                return
-            } 
-
-            arrNombre === undefined ? arrNombre = this.$store.state.pacientes.listaPacientes : ''
-            arrRaza === undefined ? arrRaza = this.$store.state.pacientes.listaPacientes : ''
-            arrEspecie === undefined ? arrEspecie = this.$store.state.pacientes.listaPacientes : ''
-            arrSexo === undefined ? arrSexo = this.$store.state.pacientes.listaPacientes : ''
-            
-            this.pacientesTotalesFiltrados = arrNombre.filter(v => JSON.stringify(arrRaza).includes(JSON.stringify(v)))
-            this.pacientesTotalesFiltrados = this.pacientesTotalesFiltrados.filter(v => JSON.stringify(arrEspecie).includes(JSON.stringify(v)))
-            this.pacientesTotalesFiltrados = this.pacientesTotalesFiltrados.filter(v => JSON.stringify(arrSexo).includes(JSON.stringify(v)))
-
-        },
-        async verificarSiHayMasDatos () {
-
-            const cantidadPacientes = this.pacientesTotalesFiltrados.length
-            let indexInicioSiguiente = this.pagina * this.MAXIMO
-
-            this.existeMasDatos = indexInicioSiguiente <= cantidadPacientes - 1
-
-        },
-    },
-    async created() {
-        await this.inicializarLista()
-    },
-}
+  data() {
+    return {
+      searchClient: algoliasearch(
+        'P4AIFRX45K',
+        '1465768dc1e30c96f7695ed808e566a3'
+      ),
+      uidCliente: '',
+      filters: '',
+      conFiltros: true,
+      smFiltros: 4,
+    };
+  },
+  components: {
+    AlgoliaClienteUID
+  },
+  computed: {
+    
+  },
+  methods: {
+    uidClienteSeleccionado( data = {} ) {
+      const { uid } = data
+      console.log('uidClienteSeleccionado: ', uid)
+      this.uidCliente = uid
+      this.filters = `uidCliente:${uid}`
+    }
+  },
+  watch: {
+    conFiltros: function (n, v) {
+      if (n) {
+        setTimeout(() => {
+          this.smFiltros = 4
+        }, 600)
+      } else {
+        this.smFiltros = 0
+      }
+    }
+  },
+  created() {
+    this.uidCliente = ''
+    this.filters = `uidCliente:${this.uidCliente}`
+  },
+};
 </script>
 
 <style>
-    .buscadores {
-        text-align: center;
-    }
-    .cabecera {
-        margin-top: -25px;
-    }
-    .titulo {
-        margin-bottom: -6px;
-        font-size: 20px;
-    }
+body {
+  font-family: sans-serif;
+  padding: 1em;
+}
+
+.ais-Hits-item {
+  display: block;
+  margin-bottom: 20px;
+}
+</style>
+
+<style scoped>
+.cabecera {
+  margin-top: -25px;
+}
+.titulo {
+  margin-bottom: -6px;
+  font-size: 20px;
+}
+
+.cartaContainer {
+  text-align: center;
+  margin-top: -27px;
+}
+
+.buscadorPacientesContenedor {
+  transition: 600ms;
+}
+
+ul {    
+  display: inline-block;
+  font-family: Arial, Verdana;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: center;
+}
+
+ul li {
+  display: block;
+  position: relative;
+  float: left;
+  text-align: center;
+  margin-left: 20px;
+}
+
+li ul {
+  display: none;
+}
+
+.tituloCliente {
+  color: #ffffff;
+}
 </style>
